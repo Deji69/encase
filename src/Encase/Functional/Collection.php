@@ -15,9 +15,6 @@ class Collection extends Value
 {
 	protected static $boxedType = [];
 
-	/** @var array */
-	protected $items = [];
-
 	/**
 	 * Construct a collection.
 	 *
