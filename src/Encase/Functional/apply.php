@@ -21,7 +21,7 @@ namespace Encase\Functional;
  */
 function apply($subject, $func, ...$args)
 {
-	assertType($func, ['callable'], 'func');
+	assertType($func, 'callable', 'func');
 
 	\array_unshift($args, \is_object($subject) ? clone $subject : $subject);
 

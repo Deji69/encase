@@ -5,7 +5,6 @@ use Encase\Doc\Comment;
 use Encase\Regex\Regex;
 use Encase\Functional\Str;
 use Encase\Functional\Func;
-use Encase\Functional\Value;
 use Encase\Doc\CommentAttribute;
 use Encase\Functional\Collection;
 
@@ -114,8 +113,9 @@ class Parser
 		return $comment;
 	}
 
-	public static function parseDocBlockAttribute(Value $line): CommentAttribute
+	public static function parseDocBlockAttribute($line): CommentAttribute
 	{
+		$line = Str::box($line);
 		$parts = $line->split(new Regex('/[^\w\-]/'), 2);
 		$name = $parts->shift();
 		$line = !$parts->isEmpty() ? $parts->shift() : '';

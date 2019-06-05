@@ -28,6 +28,15 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 {
 	use Functional;
 
+	public static $boxTypes = [
+		'string' => Str::class,
+		'callable' => Func::class,
+		'int' => Number::class,
+		'float' => Number::class,
+		'array' => Collection::class,
+		'object' => Value::class,
+	];
+
 	/** @var mixed */
 	protected $value;
 
@@ -44,7 +53,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 *
 	 * @return mixed
 	 */
-	public function get()
+	public function get($key = null, $default = null)
 	{
 		return $this->value;
 	}
@@ -124,7 +133,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 		// If the function returns a mutated copy of its input, we'll return it
 		// wrapped in a new Value instance to allow chaining.
 		if ($this->isMethodAMutator($method) && !($result instanceof self)) {
-			return new self($result);
+			return box($result);
 		}
 
 		// For totally new values being returned, return it without wrapping.
@@ -134,12 +143,53 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	/**
 	 * Create a new object instance.
 	 *
-	 * @param  mixed  $value
+	 * @param  mixed  ...$value
 	 * @return static|self
 	 */
-	public static function make($value = null)
+	public static function make(...$value)
 	{
-		return $value instanceof static ? $value : new static($value);
+		if (\func_num_args() === 1) {
+			if ($value[0] instanceof static) {
+				return clone $value[0];
+			}
+		}
+		return new static(...$value);
+	}
+
+	/**
+	 * Box a value into a managed wrapper.
+	 *
+	 * @param  mixed  $value
+	 * @return self|Str|Collection|Func
+	 */
+	public static function box($value)
+	{
+		if ($value instanceof self) {
+			$value = $value->get();
+		}
+
+		if (\is_object($value)) {
+			$value = clone $value;
+		}
+
+		$types = \array_keys(static::$boxedType ?? self::$boxTypes);
+
+		if (!empty($types)) {
+			if ($type = assertType($value, $types, 'value')) {
+				if (isset(static::$boxedType)) {
+					$type = static::$boxedType[$type];
+
+					if ($type === 'numeric') {
+						assertType($value, 'numeric', 'value');
+						$value = +$value;
+						$type = isType($value, ['int', 'float']);
+					}
+				}
+				return new self::$boxTypes[$type]($value);
+			}
+		}
+
+		return new static($value);
 	}
 
 	/**
@@ -149,7 +199,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 */
 	public function jsonSerialize()
 	{
-		return $this->value;
+		return (array)$this->value;
 	}
 
 	/**

@@ -8,11 +8,12 @@ use ArrayIterator;
 use CachingIterator;
 use JsonSerializable;
 use IteratorAggregate;
+use function Encase\Functional\split;
 use Encase\Functional\Traits\Functional;
 
-class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
+class Collection extends Value
 {
-	use Functional;
+	protected static $boxedType = [];
 
 	/** @var array */
 	protected $items = [];
@@ -20,12 +21,12 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	/**
 	 * Construct a collection.
 	 *
-	 * @param mixed ...$subject
+	 * @param  mixed  ...$subject
 	 */
 	public function __construct(...$subject)
 	{
 		$subject = \func_num_args() === 1 ? $subject[0] : \func_get_args();
-		$this->items = self::getArrayableItems($subject);
+		$this->value = self::getArrayableItems($subject);
 	}
 
 	/**
@@ -35,7 +36,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function all(): array
 	{
-		return $this->items;
+		return $this->value;
 	}
 
 	/**
@@ -45,7 +46,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function count(): int
 	{
-		return \count($this->items);
+		return \count($this->value);
 	}
 
 	/**
@@ -55,15 +56,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 * @param  mixed|\Closure|\Encase\Functional\Func  $default
 	 * @return mixed
 	 */
-	public function get($key, $default = null)
+	public function get($key = null, $default = null)
 	{
-		if (!isset($this->items[$key])) {
-			if (isType($default, 'function')) {
-				return $default();
+		if (\func_num_args() > 0) {
+			if (!isset($this->value[$key])) {
+				if (isType($default, 'function')) {
+					return $default();
+				}
+				return $default;
 			}
-			return $default;
+			return $this->value[$key];
 		}
-		return $this->items[$key];
+		return $this->value;
 	}
 
 	/**
@@ -84,7 +88,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->items);
+		return new ArrayIterator($this->value);
 	}
 
 	/**
@@ -94,7 +98,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function isEmpty(): bool
 	{
-		return empty($this->items);
+		return empty($this->value);
 	}
 
 	/**
@@ -109,7 +113,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 				return $value->jsonSerialize();
 			}
 			return $value;
-		}, $this->items);
+		}, $this->value);
 	}
 
 	/**
@@ -120,7 +124,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function push($item)
 	{
-		$this->items[] = $item;
+		$this->value[] = $item;
 		return $this;
 	}
 
@@ -136,7 +140,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	public function __call($method, $params = [])
 	{
 		// Call the Functional function.
-		$result = $this->callFunctionalMethod($this->items, $method, $params);
+		$result = $this->callFunctionalMethod($this->value, $method, $params);
 
 		// If the function returns an unmutated copy of its input, we'll return
 		// this instance to allow chaining.
@@ -163,6 +167,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	public static function make(...$subject)
 	{
 		return new static(...$subject);
+	}
+
+	/**
+	 * Box value into a collection instance.
+	 *
+	 * @param  mixed  $value
+	 * @return \Encase\Functional\Collection
+	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
+	 */
+	public static function box($value)
+	{
+		return parent::box($value);
 	}
 
 	/**
@@ -200,7 +216,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function offsetExists($key): bool
 	{
-		return \array_key_exists($key, $this->items);
+		return \array_key_exists($key, $this->value);
 	}
 
 	/**
@@ -211,7 +227,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function offsetGet($key)
 	{
-		return $this->items[$key];
+		return $this->value[$key];
 	}
 
 	/**
@@ -223,9 +239,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	public function offsetSet($key, $value): void
 	{
 		if (\is_null($key)) {
-			$this->items[] = $value;
+			$this->value[] = $value;
 		} else {
-			$this->items[$key] = $value;
+			$this->value[$key] = $value;
 		}
 	}
 
@@ -236,6 +252,6 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	 */
 	public function offsetUnset($key): void
 	{
-		unset($this->items[$key]);
+		unset($this->value[$key]);
 	}
 }

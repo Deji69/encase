@@ -1,13 +1,15 @@
 <?php
 namespace Encase\Functional\Traits;
 
+use function Encase\Functional\isType;
+
 /**
  * Proxies method calls to \Encase\Functional functions.
  *
- * @method $this|static each(callable $function)
- * @method static|$this apply(callable $function)
- * @method static|$this map(callable $function, bool $preserveKeys = false)
- * @method static|$this slice(?int $begin, int $end = null)
+ * @method mixed  apply(callable $function)
+ * @method $this  each(callable $function)
+ * @method self   map(callable $function, bool $preserveKeys = false)
+ * @method self   slice(?int $begin, int $end = null)
  * @method array|false  find(mixed $predOrValue, int $offset)
  * @method int    count()
  * @method bool   isType(string|array $type)
@@ -25,7 +27,7 @@ trait Functional
 	 * @var array
 	 */
 	private static $excludeFunctions = [
-		'assertType'
+		'assertType', 'box'
 	];
 
 	/**
@@ -89,17 +91,20 @@ trait Functional
 	 * @param  mixed   $subject
 	 * @param  string  $method
 	 * @param  array   $parameters
-	 * @return static|$this
+	 * @return static|self|$this
 	 */
 	protected function callFunctionalMethod(&$subject, $method, $parameters)
 	{
 		$function = 'Encase\\Functional\\'.$method;
 
-		if (!\in_array($method, static::$excludeFunctions) && \function_exists($function)) {
+		if (!\in_array($method, self::$excludeFunctions) && \function_exists($function)) {
 			$result = $function($subject, ...$parameters);
 
 			if ($this->isMethodAMutator($method) && !($result instanceof self)) {
-				return new static($result);
+				if (isset(static::$boxedType) && isType($result, static::$boxedType)) {
+					return new static($result);
+				}
+				return new self($result);
 			}
 
 			if (!$this->isMethodTapped($method)) {

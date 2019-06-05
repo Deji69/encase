@@ -22,6 +22,7 @@
 		"files": [
 			"src/Encase/Functional/apply.php",
 			"src/Encase/Functional/assertType.php",
+			"src/Encase/Functional/box.php",
 			"src/Encase/Functional/concat.php",
 			"src/Encase/Functional/each.php",
 			"src/Encase/Functional/find.php",

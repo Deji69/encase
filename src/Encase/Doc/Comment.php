@@ -3,8 +3,6 @@ namespace Encase\Doc;
 
 use Encase\Regex\Regex;
 use Encase\Functional\Str;
-use Encase\Functional\Value;
-use function Encase\Functional\split;
 
 class Comment
 {
@@ -51,7 +49,7 @@ class Comment
 	 */
 	public function __construct($source)
 	{
-		$this->source = Value::make($source)->apply('trim');
+		$this->source = Str::make($source)->apply('trim');
 		$this->isInline = $this->source->slice(0, 2)->is('//');
 		$this->isDocBlock = $this->source->slice(0, 3)->is('/**');
 	}
