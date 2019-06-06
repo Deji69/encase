@@ -25,9 +25,15 @@ function first($iterable)
 	}
 
 	// Ensure iterators are valid so we return null rather than false like
-	// end() does.
-	if ($iterable instanceof \Iterator && !$iterable->valid()) {
-		return null;
+	// end() does. If it's an \ArrayIterator, we can treat it as an array, for
+	// whatever reason...
+	if ($iterable instanceof \Iterator) {
+		if (!$iterable->valid()) {
+			return null;
+		}
+
+		$iterable->rewind();
+		return $iterable->current();
 	}
 
 	return \reset($iterable);

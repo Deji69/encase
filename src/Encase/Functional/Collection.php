@@ -1,19 +1,15 @@
 <?php
 namespace Encase\Functional;
 
-use Countable;
-use ArrayAccess;
 use Traversable;
-use ArrayIterator;
-use CachingIterator;
 use JsonSerializable;
-use IteratorAggregate;
 use function Encase\Functional\split;
-use Encase\Functional\Traits\Functional;
 
 class Collection extends Value
 {
-	protected static $boxedType = [];
+	protected static $boxedType = [
+		'array' => 'array'
+	];
 
 	/**
 	 * Construct a collection.
@@ -68,27 +64,6 @@ class Collection extends Value
 	}
 
 	/**
-	 * Get a CachingIterator instance.
-	 *
-	 * @param  int  $flags
-	 * @return \CachingIterator
-	 */
-	public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
-	{
-		return new CachingIterator($this->getIterator(), $flags);
-	}
-
-	/**
-	 * Get an iterator for the items.
-	 *
-	 * @return \ArrayIterator
-	 */
-	public function getIterator()
-	{
-		return new ArrayIterator($this->value);
-	}
-
-	/**
 	 * Check if the collection is empty.
 	 *
 	 * @return bool
@@ -134,7 +109,7 @@ class Collection extends Value
 	 * @param  array   $parameters
 	 * @return static|$this
 	 */
-	public function __call($method, $params = [])
+	/*public function __call($method, $params = [])
 	{
 		// Call the Functional function.
 		$result = $this->callFunctionalMethod($this->value, $method, $params);
@@ -153,7 +128,7 @@ class Collection extends Value
 
 		// For totally new values being returned, return it without wrapping.
 		return $result;
-	}
+	}*/
 
 	/**
 	 * Create a new collection instance.
@@ -203,52 +178,5 @@ class Collection extends Value
 		}
 
 		return (array)$items;
-	}
-
-	/**
-	 * Determine if an item exists at an offset.
-	 *
-	 * @param  mixed  $key
-	 * @return bool
-	 */
-	public function offsetExists($key): bool
-	{
-		return \array_key_exists($key, $this->value);
-	}
-
-	/**
-	 * Get an item at a given offset wrapped as a Value.
-	 *
-	 * @param  mixed  $key
-	 * @return mixed
-	 */
-	public function offsetGet($key)
-	{
-		return $this->value[$key];
-	}
-
-	/**
-	 * Set the item at a given offset.
-	 *
-	 * @param  mixed  $key
-	 * @param  mixed  $value
-	 */
-	public function offsetSet($key, $value): void
-	{
-		if (\is_null($key)) {
-			$this->value[] = $value;
-		} else {
-			$this->value[$key] = $value;
-		}
-	}
-
-	/**
-	 * Unset the item at a given offset.
-	 *
-	 * @param  string  $key
-	 */
-	public function offsetUnset($key): void
-	{
-		unset($this->value[$key]);
 	}
 }

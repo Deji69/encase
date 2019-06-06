@@ -34,7 +34,7 @@ class Parser
 
 			$lines = Collection::make();
 
-			foreach ($comment as $line) {
+			foreach ($comment->boxIt() as $line) {
 				if ($line->isEmpty()) {
 					$lines[] = $line;
 					continue;

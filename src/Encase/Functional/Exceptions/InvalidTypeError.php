@@ -5,7 +5,7 @@ use function Encase\Functional\join;
 
 class InvalidTypeError extends \InvalidArgumentException
 {
-	public static function make($type, $value, $paramName, $depth = 1)
+	public static function make($type, $value, $paramName, $depth = 1): InvalidTypeError
 	{
 		$trace = \debug_backtrace(true, $depth + 1);
 		$funcName = $trace[$depth]['function'];

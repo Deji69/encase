@@ -9,7 +9,7 @@ use JsonSerializable;
 use IteratorAggregate;
 use function func_get_args;
 use function array_key_exists;
-use Encase\Functional\ValueIterator;
+use Encase\Functional\BoxIterator;
 use Encase\Functional\Traits\Functional;
 
 /**
@@ -32,7 +32,9 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 		'string' => Str::class,
 		'callable' => Func::class,
 		'int' => Number::class,
+		'bool' => Number::class,
 		'float' => Number::class,
+		'numeric' => Number::class,
 		'array' => Collection::class,
 		'object' => Value::class,
 	];
@@ -132,8 +134,8 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 
 		// If the function returns a mutated copy of its input, we'll return it
 		// wrapped in a new Value instance to allow chaining.
-		if ($this->isMethodAMutator($method) && !($result instanceof self)) {
-			return box($result);
+		if ($this->isMethodAMutator($method) && !($result instanceof static)) {
+			return Value::box($result);
 		}
 
 		// For totally new values being returned, return it without wrapping.
@@ -182,7 +184,6 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 					if ($type === 'numeric') {
 						assertType($value, 'numeric', 'value');
 						$value = +$value;
-						$type = isType($value, ['int', 'float']);
 					}
 				}
 				return new self::$boxTypes[$type]($value);
@@ -209,7 +210,28 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 */
 	public function getIterator()
 	{
-		return new ValueIterator($this->value);
+		return new ArrayIterator($this->value);
+	}
+
+	/**
+	 * Get an iterator that boxes elements to Value instances.
+	 *
+	 * @return \BoxIterator
+	 */
+	public function getBoxIterator(): BoxIterator
+	{
+		return new BoxIterator($this->value);
+	}
+
+	/**
+	 * Convenience alias for getBoxIterator().
+	 *
+	 * @uses self::getBoxIterator Name
+	 * @return \BoxIterator
+	 */
+	public function boxIt(): BoxIterator
+	{
+		return $this->getBoxIterator();
 	}
 
 	/**

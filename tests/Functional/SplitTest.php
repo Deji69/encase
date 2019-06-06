@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Functional;
 
+use Encase\Functional\Str;
 use Encase\Tests\TestCase;
+use Encase\Functional\Collection;
 use function Encase\Functional\split;
 
 class SplitTest extends TestCase
@@ -35,5 +37,12 @@ class SplitTest extends TestCase
 		$string = '✔✔✔';
 		$result = split($string);
 		$this->assertSame(['✔', '✔', '✔'], $result);
+	}
+
+	public function testSplitWrappedStr()
+	{
+		$string = Str::make('foo');
+		$result = $string->split();
+		$this->assertEquals(Collection::make('f', 'o', 'o'), $result);
 	}
 }

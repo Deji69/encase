@@ -6,6 +6,7 @@ class Number extends Value
 	protected static $boxedType = [
 		'int' => 'int',
 		'float' => 'float',
+		'bool' => 'bool',
 		'string' => 'numeric',
 	];
 
@@ -17,7 +18,7 @@ class Number extends Value
 	 */
 	public function __construct($value)
 	{
-		assertType($value, ['int', 'float'], 'value');
+		assertType($value, ['int', 'bool', 'float'], 'value');
 		$this->value = $value;
 	}
 }

@@ -116,10 +116,20 @@ class ValueTest extends TestCase
 	public function testIterable()
 	{
 		$value = Value::make([1, 2, 3]);
+		$expect = 1;
+
+		foreach ($value as $key => $val) {
+			$this->assertSame($expect++, $val);
+		}
+	}
+
+	public function testBoxedIterable()
+	{
+		$value = Value::make([1, 2, 3]);
 		$sum = 0;
 		$keys = 0;
 
-		foreach ($value as $key => $val) {
+		foreach ($value->boxIt() as $key => $val) {
 			$this->assertInstanceOf(Value::class, $val);
 
 			$sum += $val->get();

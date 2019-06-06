@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Functional;
 
+use Encase\Functional\Str;
 use Encase\Tests\TestCase;
+use Encase\Functional\Number;
 use Encase\Functional\Collection;
 
 class CollectionTest extends TestCase
@@ -109,6 +111,24 @@ class CollectionTest extends TestCase
 		$result = $collection->shift();
 		$this->assertSame(2, $result);
 		$this->assertSame([3, 4, 5], $collection->all());
+	}
+
+	/** @dataProvider casesEachMethodBoxesValues */
+	public function testEachMethodValueIterator($value, $class)
+	{
+		$collection = Collection::make([$value]);
+		$collection->getBoxIterator()->each(function ($value) use ($class) {
+			$this->assertInstanceOf($class, $value);
+		});
+	}
+
+	public function casesEachMethodBoxesValues()
+	{
+		return [
+			'With integer' => [123, Number::class],
+			'With float' => [3.14, Number::class],
+			'With string' => ['hi', Str::class],
+		];
 	}
 
 	public function casesConstruction()
