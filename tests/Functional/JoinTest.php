@@ -27,6 +27,13 @@ class JoinTest extends TestCase
 		$this->assertSame('1, 2 and 3', $result);
 	}
 
+	public function testJoinArrayWithOnlyLastSeparator()
+	{
+		$array = [1, 2, 3];
+		$result = join($array, null, '&');
+		$this->assertSame('1,2&3', $result);
+	}
+
 	public function testJoinArrayObject()
 	{
 		$obj = new \ArrayObject([1, 2, 3]);
