@@ -80,9 +80,18 @@ class FindTest extends TestCase
 
 	public function testFindTruthy()
 	{
-		$array = [false, 0, 0.0, '', '0', true, '1'];
+		$array = [false, 0, '', '0', true, 0.0, '1'];
 		$match = find($array);
-		$this->assertSame([5, true], $match);
+		$this->assertSame([4, true], $match);
+		$match = find($array, null, 5);
+		$this->assertSame([6, '1'], $match);
+	}
+
+	public function testFindTrueExplicitly()
+	{
+		$array = [false, 1, '1', true];
+		$match = find($array, true);
+		$this->assertSame([3, true], $match);
 	}
 
 	public function testFindPredicateInArray()
