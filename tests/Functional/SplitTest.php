@@ -5,6 +5,7 @@ use Encase\Functional\Str;
 use Encase\Tests\TestCase;
 use Encase\Functional\Collection;
 use function Encase\Functional\split;
+use Encase\Regex\Regex;
 
 class SplitTest extends TestCase
 {
@@ -44,5 +45,12 @@ class SplitTest extends TestCase
 		$string = Str::make('foo');
 		$result = $string->split();
 		$this->assertEquals(Collection::make('f', 'o', 'o'), $result);
+	}
+
+	public function testSplitByRegex()
+	{
+		$string = 'hel.lo|wor/ld';
+		$result = split($string, Regex::make('/[^\w]/'));
+		$this->assertSame(['hel', 'lo', 'wor', 'ld'], $result);
 	}
 }
