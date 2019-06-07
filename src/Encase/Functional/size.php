@@ -8,14 +8,11 @@ namespace Encase\Functional;
  * For strings, this is the number of characters.
  *
  * @param  iterable|string  $value
- * @param  string $encoding (optional) The character encoding of `$value` if
- *                          it's a string; see `mb_list_encodings()` for the
- *                          list of supported encodings.
  * @return int  Size of `$value` - 0 if `$value` is not an interable or string.
  *
  * @alias count
  */
-function size($value, string $encoding = 'UTF-8')
+function size($value)
 {
 	if (isType($value, ['array', 'Countable'])) {
 		return \count($value);
@@ -23,7 +20,7 @@ function size($value, string $encoding = 'UTF-8')
 
 	if (\is_string($value)) {
 		return \function_exists('mb_strlen') ?
-			\mb_strlen($value, $encoding) :
+			\mb_strlen($value) :
 			\count(\preg_split('//u', $value, null, PREG_SPLIT_NO_EMPTY));
 	}
 
