@@ -56,8 +56,8 @@ class SliceTest extends TestCase
 			'four' => 4,
 			'five' => 5,
 		];
-		$result = slice($array, 2);
-		$this->assertSame(['three' => 3, 'four' => 4, 'five' => 5], $result);
+		$result = slice($array, 2, -1);
+		$this->assertSame(['three' => 3, 'four' => 4], $result);
 	}
 
 	public function testSliceIterable()
