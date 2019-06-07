@@ -6,12 +6,20 @@ Encase Functional Library
     - [Functional functions + OOP Methods](#functional-functions--oop-methods)
       - [Method chaining](#method-chaining)
       - [Non-mutability](#non-mutability)
+  - [Types](#types)
+    - [`BoxIterator`](#boxiterator)
+    - [`Collection`](#collection)
+    - [`Func`](#func)
+    - [`Number`](#number)
+    - [`Str`](#str)
   - [Functions](#functions)
-    - [apply](#apply)
+    - [`apply`](#apply)
       - [PHP internal function difference](#php-internal-function-difference)
-    - [assertType](#asserttype)
-  - [Exceptions](#exceptions)
-    - [InvalidTypeError](#invalidtypeerror)
+    - [`assertType`](#asserttype)
+    - [`isType`](#istype)
+      - [Example](#example)
+  - [Exception Types](#exception-types)
+    - [`InvalidTypeError`](#invalidtypeerror)
 
 This library draws inspiration from others such as lodash, underscore.php and
 Laravel, providing various functional programming features combined with
@@ -84,13 +92,48 @@ $foo = $array->join('.');      // 'f.o.o'
 $baa = $newArray->join('.');   // 'b.a.a'
 ```
 
+## Types
+
+Most types provided in this library are designed to be used as objects with functional methods, similarly to the core objects in JavaScript.
+
+### `BoxIterator`
+
+An array iterator which boxes elements appropriately upon accessing them. For example, a string element is boxed in a `Str` instance upon accessing, and an array to a `Collection` instance.
+
+### `Collection`
+
+TODO: Rename to `Arr`?
+
+Extends: `Value`  
+Boxes: `array`
+
+Similar to Laravel collections, a value wrapper which can be used to manage PHP arrays in a functional way.
+
+### `Func`
+
+This is merely used as a wrapper around function objects in order to disambiguate PHP callables, which can be strings and arrays which may be called as functions.
+
+### `Number`
+
+Extends: `Value`  
+Boxes: `int`, `float`, `bool` (converts: `string`)
+
+Similar to the Number class in JavaScript, this is a value wrapper which can be used to manage integer and float values in a functional way.
+
+### `Str`
+
+Extends: `Value`  
+Boxes: `string` (converts: `int`, `float`, `bool`)
+
+A value wrapper for PHP strings which can be used to manage integer and float values in a functional way.
+
 ## Functions
 
 This is a list of the functions provided by the library. Most of these are common in many functional languages and libraries although there may be some differences and additional features.
 
 All functions try to make maximum use of native PHP features as well as possible and aim to be flexible in their usability. One example of this is how many functions expecting `array`-like subjects will accept strings and treat them as arrays of unicode characers.
 
-### apply
+### `apply`
 
 `apply(mixed $subject, callable $func, mixed ...$args): mixed`
 
@@ -118,19 +161,34 @@ So, what if you want to manually pass to an optional parameter of an internal fu
 apply('***success***', new Func('trim'), '*');  // result: 'success'
 ```
 
-### assertType
+### `assertType`
 
 `assertType(mixed $value, string|string[] $types, string $paramName)`
 
-Asserts that the type of `$value` is one of those given in `$types`. See [isType](#isType) for more details.
+Asserts that the type of `$value` is one of those given in `$types`. See [isType](#isType) for more details. This is designed to be used in cases where static type hinting falls short, such as allowing more than one possible type to be passed or allowing types or combinations of types that cannot be represented as type-hints.
 
 If `$value` does not match any of the given types, an `Encase\Functional\Exceptions\InvalidTypeError` exception is thrown using `$types, $value, $paramName` for construction. See [InvalidTypeError](#InvalidTypeError) for more details.
 
-## Exceptions
+### `isType`
+
+`isType(mixed $value, string|string[] $types)`
+
+Determines if `$value` is any one of the given `$types`. Returns a string representing the name of the type if it is, otherwise `FALSE`.
+
+The type names can be anything useable as a static type hint in PHP, or accepted by PHP's internal `is_*` functions. Additionally, it can be `function`, which passes for a closure or `\Encase\Functional\Func` instance (this is to disambiguate from strings which may be callable).
+
+#### Example
+```php
+isType(3.14, ['int', 'float']);   // returns: 'float'
+isType(123, 'string');            // returns: FALSE
+isType('hi', 'scalar');           // returns: 'scalar'
+```
+
+## Exception Types
 
 Functional exceptions live in the `\Encase\Functional\Exceptions` namespace.
 
-### InvalidTypeError
+### `InvalidTypeError`
 
 Extends `\InvalidArgumentException` to represent an invalid argument, but is made to be more like a `TypeError` which PHP raises with static typehints when invalid arguments are passed. The error message is more helpful, following the format:  
 `Argument $arg of $func expects $type, $givenType given, called in $file on line $line`
@@ -141,3 +199,5 @@ Can be created using the static method `make`.
 
 **Static Methods**  
 `InvalidTypeError::make(string|string[] $type, mixed $value, string $paramName, int $depth = 1): InvalidTypeError`
+
+Returns a new instance of `InvalidTypeError`, with the error message generated using the provided parameters. `$type` should be an accepted type, or array of accepted types. `$value` is used to determine the given type. `$paramName` should be the name of the variable passed to `$value` and is displayed with a `$` prepended and used to determine the argument index. `$depth` can be used to specify how many levels the errors originating file/line should be traced back to.
