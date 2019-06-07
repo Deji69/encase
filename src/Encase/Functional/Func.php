@@ -18,7 +18,6 @@ class Func extends Value
 	 */
 	public function __construct(callable $function)
 	{
-		assertType($function, 'callable', 'function');
 		$this->value = $function;
 	}
 
