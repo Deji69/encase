@@ -45,6 +45,13 @@ function find($value, $pred = null, int $offset = 0)
 
 	$predIsFunction = isType($pred, 'function');
 
+	// Prevent also passing the index to PHP internal functions.
+	if ($pred instanceof Func && $pred->isInternal()) {
+		$pred = function ($value) use ($pred) {
+			return $pred($value);
+		};
+	}
+
 	if ($type === 'string') {
 		if (!\function_exists('mb_strpos')) {
 			$pred = function ($value) use ($pred) {

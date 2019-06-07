@@ -26,15 +26,14 @@ function apply($subject, $func, ...$args)
 	\array_unshift($args, \is_object($subject) ? clone $subject : $subject);
 
 	if (!$func instanceof Func) {
-		$reflection = \is_array($func) ?
-			new \ReflectionMethod($func[0], $func[1]) :
-			new \ReflectionFunction($func);
+		$func = Func::make($func);
 
-		if ($reflection->isInternal() && !$reflection->isVariadic()) {
-			if ($nargs = $reflection->getNumberOfRequiredParameters()) {
+		if ($func->isInternal() && !$func->isVariadic()) {
+			if ($nargs = $func->getNumberOfRequiredParameters()) {
 				$args = \array_slice($args, 0, $nargs);
 			}
 		}
 	}
+
 	return \call_user_func_array($func, $args);
 }

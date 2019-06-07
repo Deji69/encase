@@ -3,6 +3,7 @@ namespace Tests\Functional;
 
 use Encase\Tests\TestCase;
 use function Encase\Functional\find;
+use Encase\Functional\Func;
 
 class FindTest extends TestCase
 {
@@ -110,6 +111,13 @@ class FindTest extends TestCase
 			return $value === 'f';
 		});
 		$this->assertSame([16, 'f'], $match);
+	}
+
+	public function testFindInternalFunctionPredicateInString()
+	{
+		$string = 'aeIou';
+		$match = find($string, new Func('ctype_upper'));
+		$this->assertSame([2, 'I'], $match);
 	}
 
 	public function testFindPredicateInStringWithOffset()
