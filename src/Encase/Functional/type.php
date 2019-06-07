@@ -8,7 +8,7 @@ namespace Encase\Functional;
  * callables as those are strings and arrays first.
  *
  * @param  mixed  $value
- * @return string|null  One of: "array", "bool", "int", float", "function",
+ * @return string|null  One of: "array", "bool", "int", "float", "function",
  *                      "null", "object", "resource", "string"
  */
 function type($value): string
