@@ -373,7 +373,7 @@ $result = each($array, $index, function ($value) {
   return;
 });
 
-// $result === 'error in : 3'
+// $result === 'error: 3'
 ```
 
 ### `find`
