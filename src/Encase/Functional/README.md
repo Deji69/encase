@@ -356,7 +356,9 @@ $str = 'find ✔ the ✔ ticks';
 $result = [];
 
 each($str, function ($value, $index, $str) use (&$result) {
-    $result[$index] = \mb_substr($str, $index);
+    if ($value === '✔') {
+        $result[$index] = \mb_substr($str, $index);
+    }
 });
 
 // $result === ['✔ the ✔ ticks', '✔ ticks']
