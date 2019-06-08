@@ -177,8 +177,6 @@ foreach ($iterator as $str) {
 
 ### `Collection`
 
-TODO: Rename to `Arr`?
-
 Extends: `Value`  
 Boxes: `array`
 
