@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Functional;
+namespace Encase\Functional\Tests;
 
 use Mockery as m;
 use Encase\Tests\TestCase;

@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Functional;
+namespace Encase\Functional\Tests;
 
 use Encase\Tests\TestCase;
 use function Encase\Functional\concat;

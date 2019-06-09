@@ -2,21 +2,25 @@
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+	backupGlobals="false"
 	colors="true"
 	verbose="true"
 	failOnRisky="true"
+	failOnWarning="true"
 	beStrictAboutChangesToGlobalState="true"
 	beStrictAboutOutputDuringTests="true"
 	beStrictAboutTestsThatDoNotTestAnything="true"
 	bootstrap="./tests/bootstrap.php"
 >
 	<php>
+		<ini name="error_reporting" value="-1" />
 		<env name="COLUMNS" value="120"/>
 	</php>
 
 	<testsuites>
 		<testsuite name="Encase Test Suite">
-			<directory>./tests</directory>
+			<!--<directory>./tests</directory>-->
+			<directory>./src/Encase/*/Tests</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

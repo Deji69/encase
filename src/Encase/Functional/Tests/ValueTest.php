@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Functional;
+namespace Encase\Functional\Tests;
 
 use Encase\Functional\Str;
 use Encase\Tests\TestCase;

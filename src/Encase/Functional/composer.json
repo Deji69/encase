@@ -1,5 +1,6 @@
 {
 	"name": "encase/functional",
+	"type": "library",
 	"description": "Functional, fluent and efficient",
 	"license": "MIT",
 	"keywords": ["functional", "fluent", "object oriented", "boxing"],
@@ -17,7 +18,10 @@
 	"autoload": {
 		"psr-4": {
 			"Encase\\Functional\\": ""
-		}
+		},
+		"exclude-from-classmap": [
+			"/Tests/"
+		]
 	},
 	"config": {
 		"sort-packages": true
