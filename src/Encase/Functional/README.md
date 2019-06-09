@@ -67,6 +67,11 @@ All non-`Value` types inherit from `Value`.
 
 # Installation
 
+Install using composer:
+```
+composer require encase/functional
+```
+
 # Examples
 
 ## Functional functions & OOP Methods
