@@ -1,0 +1,26 @@
+{
+	"name": "encase/functional",
+	"description": "Functional, fluent and efficient",
+	"license": "MIT",
+	"keywords": ["functional", "fluent", "object oriented", "boxing"],
+	"homepage": "https://github.com/Deji69/encase-functional",
+	"authors": [
+		{
+			"name": "Deji69",
+			"email": "the_zone@hotmail.co.uk"
+		}
+	],
+	"require": {
+		"php": "^7.2",
+		"ext-mbstring": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Encase\\Functional\\": ""
+		}
+	},
+	"config": {
+		"sort-packages": true
+	},
+	"minimum-stability": "dev"
+}
