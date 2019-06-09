@@ -1,6 +1,11 @@
 Encase Functional Library
 =========================
 
+[![Build Status](https://travis-ci.org/Deji69/encase.svg?branch=master)](https://travis-ci.org/Deji69/encase)
+[![Latest Stable Version](https://poser.pugx.org/encase/functional/v/stable)](https://packagist.org/packages/encase/functional)
+[![Total Downloads](https://poser.pugx.org/encase/functional/downloads)](https://packagist.org/packages/encase/functional)
+[![License](https://poser.pugx.org/encase/functional/license)](https://packagist.org/packages/encase/functional)
+
 - [Encase Functional Library](#encase-functional-library)
 - [Overview](#overview)
 - [Installation](#installation)
