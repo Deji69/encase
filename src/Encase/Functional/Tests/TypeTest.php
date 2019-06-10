@@ -1,7 +1,6 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
 use function Encase\Functional\type;
 
 class TypeTest extends TestCase

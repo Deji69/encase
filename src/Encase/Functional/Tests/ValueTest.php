@@ -1,8 +1,6 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Functional\Str;
-use Encase\Tests\TestCase;
 use Encase\Functional\Value;
 
 class ValueTest extends TestCase

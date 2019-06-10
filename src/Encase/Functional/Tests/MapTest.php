@@ -2,7 +2,6 @@
 namespace Encase\Functional\Tests;
 
 use Mockery as m;
-use Encase\Tests\TestCase;
 use function Encase\Functional\map;
 
 class MapTest extends TestCase

@@ -1,10 +1,9 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
-use function Encase\Functional\join;
-use Encase\Functional\Collection;
 use Encase\Functional\Str;
+use Encase\Functional\Collection;
+use function Encase\Functional\join;
 
 class JoinTest extends TestCase
 {

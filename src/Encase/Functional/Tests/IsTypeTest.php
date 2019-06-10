@@ -1,9 +1,8 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
-use function Encase\Functional\isType;
 use Encase\Functional\Func;
+use function Encase\Functional\isType;
 
 class IsTypeTest extends TestCase
 {

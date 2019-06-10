@@ -2,7 +2,6 @@
 namespace Encase\Functional\Tests;
 
 use Mockery as m;
-use Encase\Tests\TestCase;
 use function Encase\Functional\each;
 
 class EachTest extends TestCase

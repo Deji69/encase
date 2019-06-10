@@ -2,7 +2,6 @@
 namespace Encase\Functional\Tests;
 
 use Encase\Functional\Str;
-use Encase\Tests\TestCase;
 use Encase\Functional\Number;
 use Encase\Functional\Collection;
 

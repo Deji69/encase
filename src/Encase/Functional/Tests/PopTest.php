@@ -1,7 +1,6 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
 use Encase\Functional\Collection;
 use function Encase\Functional\pop;
 

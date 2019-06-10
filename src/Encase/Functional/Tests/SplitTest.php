@@ -1,11 +1,10 @@
 <?php
 namespace Encase\Functional\Tests;
 
+use Encase\Regex\Regex;
 use Encase\Functional\Str;
-use Encase\Tests\TestCase;
 use Encase\Functional\Collection;
 use function Encase\Functional\split;
-use Encase\Regex\Regex;
 
 class SplitTest extends TestCase
 {

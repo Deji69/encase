@@ -1,9 +1,8 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
-use function Encase\Functional\find;
 use Encase\Functional\Func;
+use function Encase\Functional\find;
 
 class FindTest extends TestCase
 {

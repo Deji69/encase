@@ -1,9 +1,8 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use Encase\Tests\TestCase;
-use function Encase\Functional\concat;
 use Encase\Functional\Collection;
+use function Encase\Functional\concat;
 
 class ConcatTest extends TestCase
 {

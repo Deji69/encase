@@ -2,12 +2,11 @@
 namespace Encase\Functional\Tests;
 
 use Encase\Functional\Str;
-use Encase\Tests\TestCase;
 use Encase\Functional\Func;
 use Encase\Functional\Value;
 use Encase\Functional\Number;
-use function Encase\Functional\box;
 use Encase\Functional\Collection;
+use function Encase\Functional\box;
 use Encase\Functional\Exceptions\InvalidTypeError;
 
 class BoxTest extends TestCase
