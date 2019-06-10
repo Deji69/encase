@@ -91,7 +91,7 @@ $array = split('foo');        // returns: ['f', 'o', 'o']
 
 $str = Str::make('foo');      // or: new Str('foo')
 $array = $str->split();       // returns: new Collection(['f', 'o', 'o'])
-$newStr = $str->join(',');    // returns: 'f,o,o'
+$newStr = $str->join(',');    // returns: new Str('f,o,o')
 ```
 
 As you may notice, the two methods had a significant difference when calling `split()`: the function call returned a plain `array` while the method proxy call returned a `Collection` instance for chainability. This is true even if you pass an object to a function - in this example, a plain `array` is returned rather than a `Collection` instance:
@@ -107,7 +107,7 @@ If you require minimal overhead speed you may prefer the functions and dealing w
 While Functional object methods mostly just proxy calls to Functional functions, they also handle any necessary type conversions to and from Functional objects where appropriate to allow for intuitive chaining:
 
 ```php
-Str::make('a.b.c.d')->split('.')->join(', ');   // returns: 'a, b, c, d'
+Str::make('a.b.c.d')->split('.')->join(',');   // returns: new Str('a,b,c,d')
 ```
 
 ### Non-mutability
@@ -124,8 +124,8 @@ $newArray = $array->map(function ($char) {
   return $char === 'f' ? 'b' : 'a';
 });
 
-$foo = $array->join('.');      // 'f.o.o'
-$baa = $newArray->join('.');   // 'b.a.a'
+$foo = $array->join('.');      // returns: new Str('f.o.o')
+$baa = $newArray->join('.');   // returns: new Str('b.a.a')
 ```
 
 # String Treatment
