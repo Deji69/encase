@@ -472,7 +472,7 @@ $str->isType(['callable']);               // returns: 'callable'
   * **callable** - `is_callable()`
   * **countable** - `is_array()` or `instanceof \Countable` (`is_countable()` polyfilled for PHP <7.3)
   * **double**/**float**/**real** - `is_float()`
-  * **function** - `instanceof \Closure` or `instanceof \Encase\Functional\Func`"
+  * **function** - `instanceof \Closure` or `instanceof \Encase\Functional\Func`
   * **int**/**integer**/**long** - `is_int()`
   * **null** - `is_null()`
   * **numeric** - `is_numeric()`
