@@ -3,6 +3,8 @@ namespace Encase\Functional\Tests;
 
 use Encase\Tests\TestCase;
 use function Encase\Functional\join;
+use Encase\Functional\Collection;
+use Encase\Functional\Str;
 
 class JoinTest extends TestCase
 {
@@ -55,6 +57,13 @@ class JoinTest extends TestCase
 		$obj->c = 3;
 		$result = join($obj);
 		$this->assertSame('1,2,3', $result);
+	}
+
+	public function testJoinCollectionMethod()
+	{
+		$coll = new Collection(1, 2, 3);
+		$result = $coll->join(',');
+		$this->assertEquals(new Str('1,2,3'), $result);
 	}
 
 	public static function generator()
