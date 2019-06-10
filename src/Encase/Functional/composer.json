@@ -15,13 +15,42 @@
 		"php": "^7.2",
 		"ext-mbstring": "*"
 	},
+	"require-dev": {
+		"mockery/mockery": "^1.2",
+		"phpunit/phpunit": "^8.1"
+	},
 	"autoload": {
 		"psr-4": {
 			"Encase\\Functional\\": ""
 		},
 		"exclude-from-classmap": [
 			"/Tests/"
+		],
+		"files": [
+			"apply.php",
+			"assertType.php",
+			"box.php",
+			"concat.php",
+			"each.php",
+			"find.php",
+			"first.php",
+			"isType.php",
+			"join.php",
+			"last.php",
+			"map.php",
+			"pop.php",
+			"shift.php",
+			"size.php",
+			"slice.php",
+			"split.php",
+			"type.php",
+			"values.php"
 		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Encase\\Regex\\": "../Regex"
+		}
 	},
 	"config": {
 		"sort-packages": true
