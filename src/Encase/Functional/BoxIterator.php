@@ -22,7 +22,7 @@ class BoxIterator implements \Iterator
 	 *
 	 * @param  string  $method
 	 * @param  array   $parameters
-	 * @return static|$this
+	 * @return Value|Collection|Func|Number|Str
 	 */
 	public function __call($method, $params = [])
 	{
