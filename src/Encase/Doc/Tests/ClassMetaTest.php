@@ -1,8 +1,7 @@
 <?php
-namespace Tests\Doc;
+namespace Encase\Doc\Tests;
 
 use Encase\Doc\ClassMeta;
-use Encase\Tests\TestCase;
 use InvalidArgumentException;
 
 class ClassMetaTest extends TestCase

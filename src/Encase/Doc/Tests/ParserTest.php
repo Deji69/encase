@@ -1,7 +1,6 @@
 <?php
-namespace Tests\Doc;
+namespace Encase\Doc\Tests;
 
-use Encase\Tests\TestCase;
 use Encase\Doc\Parser;
 
 /**
