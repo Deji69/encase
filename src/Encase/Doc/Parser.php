@@ -9,8 +9,9 @@ use Encase\Doc\CommentAttribute;
 use Encase\Functional\Collection;
 
 /**
- * Contains functions for parsing a doc block comment information into a
- * \Encase\Doc\Comment object.
+ * Contains methods for parsing a doc block comment information into a
+ * \Encase\Doc\Comment object. Has properties to define how comments should be
+ * parsed.
  */
 class Parser
 {
@@ -20,7 +21,7 @@ class Parser
 	 * @param  string  $comment
 	 * @return \Encase\Doc\Comment
 	 */
-	public static function parse(string $comment): Comment
+	public function parse(string $comment): Comment
 	{
 		$meta = new Comment($comment);
 		$comment = $meta->source;
@@ -72,7 +73,7 @@ class Parser
 	 * @param  \Encase\Functional\Str[]  $lines
 	 * @return \Encase\Doc\Comment
 	 */
-	protected static function parseDocBlockLines(Comment $comment, $lines): Comment
+	protected function parseDocBlockLines(Comment $comment, $lines): Comment
 	{
 		for ($i = 0; $i < $lines->count(); ++$i) {
 			$isAttribute = $lines[$i]->first() === '@';
@@ -113,7 +114,7 @@ class Parser
 		return $comment;
 	}
 
-	public static function parseDocBlockAttribute($line): CommentAttribute
+	public function parseDocBlockAttribute($line): CommentAttribute
 	{
 		$line = Str::box($line);
 		$parts = $line->split(new Regex('/[^\w\-]/'), 2);

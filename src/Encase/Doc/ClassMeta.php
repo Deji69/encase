@@ -64,10 +64,17 @@ class ClassMeta
 		return $this->getDoc()->description;
 	}
 
-	public function getDoc(): Comment
+	/**
+	 * Get parsed Doc comment metadata.
+	 *
+	 * @param  Parser|null  $parser
+	 * @return \Encase\Doc\Comment
+	 */
+	public function getDoc(Parser $parser = null): Comment
 	{
 		if (!isset($this->comment)) {
-			$this->comment = Parser::parse($this->reflection->getDocComment());
+			$parser = $parser ?? new Parser;
+			$this->comment = $parser->parse($this->reflection->getDocComment());
 		}
 		return $this->comment;
 	}
