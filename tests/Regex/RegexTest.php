@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Regex;
+namespace Encase\Regex\Tests;
 
 use Encase\Tests\TestCase;
 use Encase\Regex\Regex;
