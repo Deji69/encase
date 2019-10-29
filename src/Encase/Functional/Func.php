@@ -9,11 +9,15 @@ use ReflectionFunctionAbstract;
 class Func extends Value
 {
 	protected static $boxedType = [
-		'callable' => 'callable'
+		'callable' => 'callable',
+		'\Generator' => 'callable'
 	];
 
 	/** @var bool */
 	protected $isMethod = false;
+
+	/** @var bool */
+	protected $isGenerator = false;
 
 	/** @var \ReflectionFunctionAbstract */
 	protected $reflection = null;
@@ -27,6 +31,7 @@ class Func extends Value
 	public function __construct($function)
 	{
 		if ($function instanceof \Generator) {
+			$this->isGenerator = true;
 			$this->value = function () use ($function) {
 				$result = $function->current();
 				$function->next();
@@ -46,7 +51,17 @@ class Func extends Value
 	 */
 	public function isClosure(): bool
 	{
-		return $this->value instanceof \Closure;
+		return !$this->isGenerator && $this->value instanceof \Closure;
+	}
+
+	/**
+	 * Check if the function is a generator.
+	 *
+	 * @return bool
+	 */
+	public function isGenerator(): bool
+	{
+		return $this->isGenerator;
 	}
 
 	/**

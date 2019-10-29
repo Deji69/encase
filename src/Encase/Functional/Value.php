@@ -31,6 +31,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	public static $boxTypes = [
 		'string' => Str::class,
 		'callable' => Func::class,
+		'\Generator' => Func::class,
 		'int' => Number::class,
 		'bool' => Number::class,
 		'float' => Number::class,
@@ -170,7 +171,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 			$value = $value->get();
 		}
 
-		if (\is_object($value)) {
+		if (\is_object($value) && !$value instanceof \Generator) {
 			$value = clone $value;
 		}
 

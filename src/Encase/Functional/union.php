@@ -2,8 +2,11 @@
 namespace Encase\Functional;
 
 /**
- * Combine multiple array-like objects into one.
+ * Produce an array containing unique elements of each given arrayish value.
+ * Uniqueness considers string keys but numeric keys collide.
+ * Later values overwrite previous ones in the case of string keys.
  *
+ * @param  \array
  * @return \array
  */
 function union(...$iterables)

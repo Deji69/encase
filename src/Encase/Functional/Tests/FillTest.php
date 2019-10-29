@@ -3,6 +3,7 @@ namespace Encase\Functional\Tests;
 
 use Encase\Functional\Str;
 
+use Encase\Functional\Func;
 use function Encase\Functional\fill;
 
 class FillTest extends TestCase
@@ -21,7 +22,7 @@ class FillTest extends TestCase
 
 	public function testFillArrayWithGenerator()
 	{
-		$result = fill([], $this->predictableStringGenerator(4), 5);
+		$result = fill([], Func::box($this->predictableStringGenerator(4)), 5);
 		$this->assertSame([
 			'aaaa', 'bbbb', 'cccc', 'dddd', 'eeee'
 		], $result);
@@ -29,7 +30,7 @@ class FillTest extends TestCase
 
 	public function testFillStringWithGenerator()
 	{
-		$result = fill('', $this->predictableStringGenerator(3), 3);
+		$result = fill('', Func::box($this->predictableStringGenerator(3)), 3);
 		$this->assertSame('aaabbbccc', $result);
 	}
 

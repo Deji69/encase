@@ -32,5 +32,11 @@ function unique($iterable, bool $keepKeyed = false, int $sortFlags = \SORT_REGUL
 	}
 
 	$iterable = toArray($iterable);
-	return \array_unique($iterable, $sortFlags);
+	$iterable = \array_unique($iterable, $sortFlags);
+
+	if ($type === 'string') {
+		$iterable = join($iterable, '');
+	}
+
+	return $iterable;
 }

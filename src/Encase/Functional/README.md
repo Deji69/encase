@@ -33,6 +33,7 @@ Encase Functional Library
   - [`box`](#box)
   - [`concat`](#concat)
   - [`each`](#each)
+  - [`fill`](#fill)
   - [`find`](#find)
   - [`first`](#first)
   - [`isType`](#istype)
@@ -46,6 +47,8 @@ Encase Functional Library
   - [`slice`](#slice)
   - [`split`](#split)
   - [`type`](#type)
+  - [`union`](#union)
+  - [`unique`](#unique)
   - [`values`](#values)
 
 # Overview
@@ -207,18 +210,49 @@ Boxes: `callable`
 
 This is merely used as a wrapper around function objects in order to disambiguate PHP callables, which can be strings and arrays which may be called as functions.
 
+It can also be used to wrap `\Generator` instances. These will be wrapped in a closure which returns the current value of the generator and advances it.
+
 It's worth noting that since `Func` implements the `__invoke` magic method, it is considered `callable` by PHP, thus it passes type hints.
+
+**Examples**  
+*Disambiguate string/callable parameters*
+```php
+function hello() {
+    return 'hi';
+}
+
+fill([], 'hello', 3);              // result: ["hello", "hello", "hello"]
+fill([], Func::box('hello'), 3);   // result: ["hi", "hi", "hi"]
+```
+
+*Wrap generators*
+```php
+$strGen = function() {
+    for ($i = 0; true; ++$i) {
+        yield fill('', \chr(\ord('a') + ($i % 26)), 4);
+    }
+};
+
+fill([], $randomStrGen(), 3);       // result (example): [
+                                    //   Generator Object &00000002dcab7d...
+                                    //   Generator Object &00000002dcab7d...
+                                    //   Generator Object &00000002dcab7d...
+                                    // ]
+
+fill([], Func::box($strGen()), 3);  // result: ["aaaa", "bbbb", "cccc"]
+```
 
 **Methods**  
 `Func` provides an interface to features provided by PHP's Reflection classes. The first call to any method requiring Reflection will instantiate a new `ReflectionMethod` or `ReflectionFunction` object appropriately and store it internally for future calls. This object can be retrieved with the `getReflection` method.
 
-  * `isClosure(): bool` - Check if the function is a closure.
-  * `isMethod(): bool` - Check if the function is a method.
-  * `isInternal(): bool` - Check if the function is a PHP internal function.
-  * `isVariadic(): bool` - Check if the function is variadic.
   * `getNumberOfParameters(): int` - Get the number of parameters.
   * `getNumberOfRequiredParameters(): int` - Get the number of required parameters.
   * `getReflection(): ReflectionFunctionAbstract` - Get the reflection object.
+  * `isClosure(): bool` - Check if the function is a closure.
+  * `isGenerator(): bool` - Check if the function is a generator.
+  * `isInternal(): bool` - Check if the function is a PHP internal function.
+  * `isMethod(): bool` - Check if the function is a method.
+  * `isVariadic(): bool` - Check if the function is variadic.
 
 ## `InvalidTypeError`
 
@@ -392,6 +426,32 @@ $result = each($array, $index, function ($value) {
 });
 
 // $result === 'error: 3'
+```
+
+## `fill`
+`fill(array|string|\Countable $container, $value, int $length = null): array|string`
+
+Creates an array or string of `$length` size and fills it using `$value`. The type returned is the same as the type of `$container`.
+
+**Example with string**
+```php
+fill('', '.', 3);   // returns: "..."
+```
+
+**Example with array**
+```php
+fill([1, 2, 3], '.');   // returns: ['.', '.', '.']
+```
+
+**Example with generator**  
+The `$value` parameter will be boxed in a [`Func`](#func) if [`isType($value, ['function', 'Generator'])`](#istype). `Func` allows `fill` to call the generator as if it were a function, returning a new value and advancing the generator on each call.
+```php
+$randomAlphaGen = function () {
+    while (true) {
+        yield \chr(random_int(0, 25) + \ord('a'));
+    }
+};
+fill([], $randomAlphaGen(), 5);   // could return: ['l', 'g', 'n', 'q', 'o']
 ```
 
 ## `find`
@@ -656,6 +716,38 @@ $array = split('hel.lo|wor/ld', Regex::make('/[^\w]/'));
 Gets the type of the variable based on which of PHP's is_* checks returns true (rather than using `gettype`). Returns `'function'` for closure objects but does not work with other callables as those are strings and arrays first.
 
 Possible return values: array, bool, int, float, function, null, object, resource, string
+
+## `union`
+`union(...$arrayish): array`
+
+Returns an array or string comprised the unique elements in each of the given `$arrays` values. String keys are always considered unique, but numeric keys will collide based on value alone. Later values overwrite previous ones.
+
+**Example**
+
+```php
+$default => ['flagA', 'flagC', 'speed' => 100, 'price' => 50];
+$options => ['flagA', 'flagB', 'speed' => 50];
+union($default, $options);
+// returned: ['flagA', 'flagB', 'flagC', 'speed' => 50, 'price' => 50]
+```
+
+## `unique`
+`unique(string|array|iterable|\Traversable|\stdClass $arrayish, bool $keepKeyed = false, int $sortFlags = \SORT_REGULAR): array|string`
+
+Returns an array or string comprised of only the first occurrences of each unique element value. If `$keepKeyed` is `TRUE`, then duplicate values are allowed for elements with non-numeric keys. `$sortFlags` determines how the new array is sorted, see [`\sort`](https://www.php.net/manual/en/function.sort.php) for more details.
+
+**Examples**
+
+Unique characters in string.
+```php
+unique('aabacbc');    // returns: "abc"
+```
+
+Unique elements in keyed array.
+```php
+$array = ['val1', 'val2', 'key1' => 1, 'key2' => 1, 'key3' => 1, 'val1', 'val3']
+unique($array);   // ['val1', 'val2', 'val3', 'key1' => 1, 'key2' => 1, 'key3' => 1]
+```
 
 ## `values`
 `values(\Traversable|iterable|stdClass|null $iterable): string`

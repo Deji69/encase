@@ -1,9 +1,9 @@
 <?php
 namespace Encase\Functional;
 
-function fill($container, $value, $size = null)
+function fill($container, $value, int $size = null)
 {
-	$type = assertType($container, ['array', 'string']);
+	$type = assertType($container, ['array', 'string', ['ArrayAccess', 'Countable']]);
 
 	if ($size === null) {
 		$size = count($container);
@@ -25,9 +25,7 @@ function fill($container, $value, $size = null)
 
 	$container = [];
 
-	if ($funcOrGenerator === 'Generator') {
-		$func = new Func($value);
-	} elseif ($funcOrGenerator === 'function') {
+	if ($funcOrGenerator === 'function') {
 		$func = $value;
 	} else {
 		$func = function () use ($value) {
