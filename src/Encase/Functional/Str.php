@@ -31,4 +31,17 @@ class Str extends Value
 	{
 		return parent::box($value);
 	}
+
+	/**
+	 * Generate a random string of the given length.
+	 *
+	 * @param  int $length Size of string to generate.
+	 * @return self
+	 */
+	public static function random($length = 16)
+	{
+		$str = \random_bytes($length);
+		$str = \str_replace(['/', '+', '='], '', \base64_encode($str));
+		return parent::box($str);
+	}
 }

@@ -14,14 +14,14 @@ namespace Encase\Functional;
  */
 function size($value)
 {
-	if (isType($value, ['array', 'Countable'])) {
-		return \count($value);
-	}
-
 	if (\is_string($value)) {
 		return \function_exists('mb_strlen') ?
 			\mb_strlen($value) :
 			\count(\preg_split('//u', $value, null, PREG_SPLIT_NO_EMPTY));
+	}
+
+	if (isType($value, ['array', 'Countable'])) {
+		return \count($value);
 	}
 
 	$size = 0;

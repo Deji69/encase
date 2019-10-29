@@ -19,14 +19,23 @@ class Func extends Value
 	protected $reflection = null;
 
 	/**
-	 * Construct a Func using a callable.
+	 * Construct a Func using a callable or generator.
 	 * This can be used to disambiguate real functions from strings and arrays.
 	 *
-	 * @param  callable $function
+	 * @param  callable|\Generator $function
 	 */
-	public function __construct(callable $function)
+	public function __construct($function)
 	{
-		$this->value = $function;
+		if ($function instanceof \Generator) {
+			$this->value = function () use ($function) {
+				$result = $function->current();
+				$function->next();
+				return $result;
+			};
+		} else {
+			$this->value = $function;
+		}
+
 		$this->isMethod = \is_array($function);
 	}
 

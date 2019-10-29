@@ -15,9 +15,9 @@ namespace Encase\Functional;
  * @param  string|array  $type  The type, or array of types of which $value
  *                       must be any one of. A class name or one of: "array",
  *                       "bool", "callable", "countable", "double", "float",
- *                       "function", "int", "integer", "long", "null",
- *                       "numeric", "object", "real", "resource", "scalar",
- *                       "string"
+ *                       "function", "int", "integer", "iterable", "long",
+ *                       "null", "numeric", "object", "real", "resource",
+ *                       "scalar", "string"
  * @return bool|string  Returns the matched type string or FALSE if none match.
  */
 function isType($value, $type)

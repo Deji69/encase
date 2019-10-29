@@ -14,6 +14,7 @@
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.2",
+		"phpbench/phpbench": "@dev",
 		"phpunit/phpunit": "^8.1"
 	},
 	"autoload": {
@@ -26,8 +27,12 @@
 			"src/Encase/Functional/box.php",
 			"src/Encase/Functional/concat.php",
 			"src/Encase/Functional/each.php",
+			"src/Encase/Functional/fill.php",
 			"src/Encase/Functional/find.php",
 			"src/Encase/Functional/first.php",
+			"src/Encase/Functional/isAssociativeArray.php",
+			"src/Encase/Functional/isIndexedArray.php",
+			"src/Encase/Functional/isSequentialArray.php",
 			"src/Encase/Functional/isType.php",
 			"src/Encase/Functional/join.php",
 			"src/Encase/Functional/last.php",
@@ -37,13 +42,17 @@
 			"src/Encase/Functional/size.php",
 			"src/Encase/Functional/slice.php",
 			"src/Encase/Functional/split.php",
+			"src/Encase/Functional/toArray.php",
 			"src/Encase/Functional/type.php",
+			"src/Encase/Functional/union.php",
+			"src/Encase/Functional/unique.php",
 			"src/Encase/Functional/values.php"
 		]
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Encase\\Tests\\": "tests/"
+			"Encase\\Performance\\": "tests/Performance",
+			"Encase\\Tests\\": "tests/Tests"
 		}
 	},
 	"config": {

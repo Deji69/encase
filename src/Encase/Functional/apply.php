@@ -23,7 +23,12 @@ function apply($subject, $func, ...$args)
 {
 	assertType($func, 'callable', 'func');
 
-	\array_unshift($args, \is_object($subject) ? clone $subject : $subject);
+	\array_unshift(
+		$args,
+		\is_object($subject) && !($subject instanceof \Generator)
+			? clone $subject
+			: $subject
+	);
 
 	if (!$func instanceof Func) {
 		$func = Func::make($func);

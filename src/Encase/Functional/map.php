@@ -12,7 +12,7 @@ namespace Encase\Functional;
  *
  * @param  \Traversable|iterable|\stdClass|null  $iterable
  *         Array or object to iterate over.
- * @param  callable|\Encase\Functional\Func|null
+ * @param  callable|\Encase\Functional\Func|null $func
  * @param  bool  $preserveKeys
  *         Set to true to preserve keys.
  * @return mixed  New object or array with the same type as $iterable, or an

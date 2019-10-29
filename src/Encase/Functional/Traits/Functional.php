@@ -18,6 +18,7 @@ use function Encase\Functional\isType;
  * @method int    size()
  * @method array  split(string $separator = '', int $limit = null)
  * @method string type()
+ * @method self   unique(bool $keepKeyed = false, int $sortFlags = \SORT_REGULAR)
  */
 trait Functional
 {
@@ -38,6 +39,7 @@ trait Functional
 	private static $mutatingFunctions = [
 		'map', 'slice', 'split', 'transform',
 		'apply', 'concat',
+		'unique', 'union'
 	];
 
 	/**
