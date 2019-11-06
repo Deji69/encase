@@ -65,4 +65,18 @@ class SliceTest extends TestCase
 		$result = slice($object, 1, 3);
 		$this->assertSame(['b' => 2, 'c' => 3], $result);
 	}
+
+	public function testSliceStdClass()
+	{
+		$object = (object)['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
+		$result = slice($object, 1, 3);
+		$this->assertSame(['b' => 2, 'c' => 3], $result);
+	}
+
+	public function testSliceStdClassPastEnd()
+	{
+		$object = (object)['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
+		$result = slice($object, 2, 5);
+		$this->assertSame(['c' => 3, 'd' => 4], $result);
+	}
 }

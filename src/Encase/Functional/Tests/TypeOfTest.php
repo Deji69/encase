@@ -1,14 +1,14 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use function Encase\Functional\type;
+use function Encase\Functional\typeOf;
 
-class TypeTest extends TestCase
+class TypeOfTest extends TestCase
 {
 	/** @dataProvider casesBasic */
 	public function testBasic($value, $type)
 	{
-		$this->assertSame(type($value), $type);
+		$this->assertSame(typeOf($value), $type);
 	}
 
 	public function casesBasic()

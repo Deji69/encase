@@ -18,7 +18,7 @@ namespace Encase\Functional;
  */
 function slice($value, ?int $start, int $end = null)
 {
-	$type = assertType($value, ['\Traversable', 'iterable', 'string'], 'value');
+	$type = assertType($value, ['string', 'iterable', '\Traversable', '\stdClass'], 'value');
 
 	$start = $start ?? 0;
 
@@ -42,7 +42,7 @@ function slice($value, ?int $start, int $end = null)
 	}
 
 	// If the value is traversable, we can extract with a foreach loop.
-	if ($type === '\Traversable') {
+	if (\is_object($value)) {
 		// Try to use PHP's iterator_to_array for classes implementing
 		// \IteratorAggreggate.
 		if ($value instanceof \IteratorAggregate && $start > 0) {
@@ -51,7 +51,8 @@ function slice($value, ?int $start, int $end = null)
 			}
 
 			$value = \iterator_to_array(
-				new \LimitIterator($value->getIterator(), $start, $size), true
+				new \LimitIterator($value->getIterator(), $start, $size),
+				true
 			);
 
 			$start = 0;
@@ -61,13 +62,13 @@ function slice($value, ?int $start, int $end = null)
 			// If not, we'll fall back with array_slice with a $start of 0.
 			$output = [];
 
-			foreach ($value as $key => $value) {
+			foreach ($value as $key => $val) {
 				if ($start > 0) {
 					--$start;
 					continue;
 				}
 
-				$output[$key] = $value;
+				$output[$key] = $val;
 
 				if ($size !== null && $size > 0) {
 					--$size;
@@ -78,7 +79,7 @@ function slice($value, ?int $start, int $end = null)
 				}
 			}
 
-			$value = $output;
+			return $output;
 		}
 	}
 

@@ -49,7 +49,7 @@ class SplitTest extends TestCase
 	public function testSplitByRegex()
 	{
 		$string = 'hel.lo|wor/ld';
-		$result = split($string, Regex::make('/[^\w]/'));
+		$result = split($string, Regex::new('/[^\w]/'));
 		$this->assertSame(['hel', 'lo', 'wor', 'ld'], $result);
 	}
 }

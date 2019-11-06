@@ -103,9 +103,12 @@ class EachTest extends TestCase
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage(
-			"Argument 0 (\$iterable) of Encase\\Functional\\each expects iterable, stdClass, string or null, $type given"
+			"Argument 0 (\$iterable) of Encase\\Functional\\each expects".
+			"iterable, stdClass, string or null, $type given"
 		);
-		each($value, function () {});
+		each($value, function () {
+			//
+		});
 	}
 
 	public function mockCall($collection)
@@ -126,52 +129,48 @@ class EachTest extends TestCase
 
 	public function casesBasic()
 	{
-		return [
-			'With null' => [
-				null
-			],
-			'With empty array' => [
-				[]
-			],
-			'With array' => [
-				['first', 'second', 'third']
-			],
-			'With associative array' => [
-				['a' => 'first', 'b' => 'second', 'c' => 'third']
-			],
-			'With empty object' => [
-				(object)[]
-			],
-			'With object' => [
-				(object)['a' => 'first', 'b' => 'second', 'c' => 'third']
-			],
-			'With empty ArrayObject' => [
-				new \ArrayObject([])
-			],
-			'With ArrayObject' => [
-				new \ArrayObject(['a' => 'first', 'b' => 'second', 'c' => 'third'])
-			],
-			'With Iterator' => [
-				(new \ArrayObject(['a' => 'first', 'b' => 'second', 'c' => 'third']))->getIterator()
-			],
+		yield 'With null' => [
+			null
+		];
+		yield 'With empty array' => [
+			[]
+		];
+		yield 'With array' => [
+			['first', 'second', 'third']
+		];
+		yield 'With associative array' => [
+			['a' => 'first', 'b' => 'second', 'c' => 'third']
+		];
+		yield 'With empty object' => [
+			(object)[]
+		];
+		yield 'With object' => [
+			(object)['a' => 'first', 'b' => 'second', 'c' => 'third']
+		];
+		yield 'With empty ArrayObject' => [
+			new \ArrayObject([])
+		];
+		yield 'With ArrayObject' => [
+			new \ArrayObject(['a' => 'first', 'b' => 'second', 'c' => 'third'])
+		];
+		yield 'With Iterator' => [
+			(new \ArrayObject(['a' => 'first', 'b' => 'second', 'c' => 'third']))->getIterator()
 		];
 	}
 
 	public function casesInvalidArgumentExceptions()
 	{
-		return [
-			'With zero number' => [
-				'iterable' => 0,
-				'type' => 'integer',
-			],
-			'With number' => [
-				'iterable' => 3.14,
-				'type' => 'double',
-			],
-			'With DateTime' => [
-				'iterable' => new \DateTime(),
-				'type' => 'DateTime',
-			],
+		yield 'With zero number' => [
+			'iterable' => 0,
+			'type' => 'integer',
+		];
+		yield 'With number' => [
+			'iterable' => 3.14,
+			'type' => 'double',
+		];
+		yield 'With DateTime' => [
+			'iterable' => new \DateTime(),
+			'type' => 'DateTime',
 		];
 	}
 }

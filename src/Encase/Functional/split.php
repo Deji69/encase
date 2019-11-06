@@ -1,7 +1,7 @@
 <?php
 namespace Encase\Functional;
 
-use Encase\Regex\Regex;
+use Encase\Regex\Patternable;
 
 /**
  * Split a string up into an array of strings.
@@ -17,13 +17,13 @@ use Encase\Regex\Regex;
 function split(string $str, $separator = '', int $limit = null): array
 {
 	assertType($str, 'string', 'str');
-	assertType($separator, ['string', Regex::class], 'separator');
+	assertType($separator, ['string', Patternable::class], 'separator');
 
 	if (empty($separator)) {
 		return \preg_split('//u', $str, $limit, PREG_SPLIT_NO_EMPTY);
 	}
 
-	if ($separator instanceof Regex) {
+	if ($separator instanceof Patternable) {
 		$separator = $separator->getPattern();
 
 		if (!\function_exists('mb_split')) {

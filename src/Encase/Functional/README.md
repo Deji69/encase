@@ -705,7 +705,7 @@ Splitting by regex.
 ```php
 use \Encase\Regex\Regex;
 
-$array = split('hel.lo|wor/ld', Regex::make('/[^\w]/'));
+$array = split('hel.lo|wor/ld', Regex::new('/[^\w]/'));
 
 // $array === ['hel', 'lo', 'wor', 'ld']
 ```
