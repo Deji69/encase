@@ -41,6 +41,16 @@ class Regex implements Patternable
 	}
 
 	/**
+	 * Get the pattern string.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->pattern;
+	}
+
+	/**
 	 * Get the regex pattern.
 	 *
 	 * @return string
@@ -116,6 +126,27 @@ class Regex implements Patternable
 		return new self($delim.$pattern.$delim.$modifiers);
 	}
 
+	public function match(string $subject, int $offset = 0): ?Match
+	{
+		$matches = [];
+
+		if (\preg_match($this->getPattern(), $subject, $matches, \PREG_OFFSET_CAPTURE, $offset)) {
+			return Match::fromResults($matches);
+		}
+		return null;
+	}
+
+	/**
+	 * Create a Regex object.
+	 *
+	 * @param  string  $pattern
+	 * @return self
+	 */
+	public static function new($pattern)
+	{
+		return new self($pattern);
+	}
+
 	/**
 	 * Split a string using a regex pattern.
 	 *
@@ -129,24 +160,45 @@ class Regex implements Patternable
 	}
 
 	/**
-	 * Create a Regex object.
+	 * Determines if the string can be used as a regex pattern.
 	 *
-	 * @param  string  $pattern
-	 * @return static
+	 * The `$delimiter` parameter can be used to only validate with a specific
+	 * delimiter character. If NULL, the delimiter character is determined by
+	 * the first character of `$str`.
+	 *
+	 * Returns TRUE for e.g. with "/[A-Z]/i".
+	 * Returns FALSE if either an unescaped delimiter is not found, if any
+	 * characters following the end delimiter are not valid modifier
+	 * characters, or if the string is empty.
+	 *
+	 * @param  string $str The input string.
+	 * @param  string|null $delimiter If provided, only accepts this delimiter.
+	 * @return bool
 	 */
-	public static function make($pattern)
+	public static function isRegexString(string $str, string $delimiter = null): bool
 	{
-		return new static($pattern);
-	}
+		if (empty($str)) {
+			return false;
+		}
 
-	/**
-	 * Get the pattern string.
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->pattern;
+		if ($delimiter === null) {
+			$delimiter = $str[0];
+		}
+
+		if ($endDelimiterPos = \strrpos($str, $delimiter)) {
+			if (self::isCharacterEscaped($str, $endDelimiterPos, '\\')) {
+				return false;
+			}
+
+			for ($i = $endDelimiterPos + 1; $i < \strlen($str); ++$i) {
+				if (!isset(self::MODIFIERS[$str[$i]])) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -168,5 +220,17 @@ class Regex implements Patternable
 			}
 		}
 		return [$this->pattern, ''];
+	}
+
+	protected static function isCharacterEscaped($str, $pos, $escapeChar)
+	{
+		$cur = $pos;
+
+		while ($cur > 0 && $str[$cur - 1] == $escapeChar) {
+			--$cur;
+		}
+
+		$distance = $pos - $cur - 1;
+		return $distance % 2 === 0;
 	}
 }

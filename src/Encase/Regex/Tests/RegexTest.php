@@ -7,9 +7,9 @@ class RegexTest extends TestCase
 {
 	public function testConstruction()
 	{
-		$regex = Regex::make('/test/');
+		$regex = Regex::new('/test/');
 		$this->assertSame('/test/', $regex->getPattern());
-		$newRegex = Regex::make($regex);
+		$newRegex = Regex::new($regex);
 		$this->assertSame('/test/', $newRegex->getPattern());
 	}
 
@@ -21,7 +21,7 @@ class RegexTest extends TestCase
 
 	public function testHasModifier()
 	{
-		$regex = Regex::make('/test/Am');
+		$regex = Regex::new('/test/Am');
 		$this->assertTrue($regex->hasModifier('A'));
 		$this->assertTrue($regex->hasModifier('m'));
 		$this->assertFalse($regex->hasModifier('i'));
@@ -30,10 +30,22 @@ class RegexTest extends TestCase
 
 	public function testAddModifier()
 	{
-		$regex = Regex::make('/test/');
+		$regex = Regex::new('/test/');
 		$regex = $regex->addModifier('A');
 		$regex = $regex->addModifier('m');
 		$regex = $regex->addModifier('i');
 		$this->assertSame('Ami', $regex->getModifiers());
+	}
+
+	public function testIsRegexString()
+	{
+		$this->assertTrue(Regex::isRegexString('/test/'));
+		$this->assertTrue(Regex::isRegexString('/([A-Z\w]+).*/i'));
+		$this->assertFalse(Regex::isRegexString('/\/'));
+		$this->assertFalse(Regex::isRegexString('/\\/'));
+		$this->assertTrue(Regex::isRegexString('/\\\/'));
+		$this->assertFalse(Regex::isRegexString('/\\\\\/'));
+		$this->assertFalse(Regex::isRegexString('/\\\\\\/'));
+		$this->assertTrue(Regex::isRegexString('/\\\\\\\/'));
 	}
 }
