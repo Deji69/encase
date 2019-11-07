@@ -4,6 +4,12 @@ namespace Encase\Functional;
 use ReflectionFunctionAbstract;
 
 /**
+ * Represents a callable function, such as a closure or function name.
+ * Additionally works with generators which may be called like functions via
+ * this class.
+ *
+ * Also provides reflection information on the underlying function/generator.
+ *
  * @method static box(callable $value)
  */
 class Func extends Value
