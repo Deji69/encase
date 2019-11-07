@@ -41,7 +41,7 @@ class SplitTest extends TestCase
 
 	public function testSplitWrappedStr()
 	{
-		$string = Str::make('foo');
+		$string = Str::new('foo');
 		$result = $string->split();
 		$this->assertEquals(Collection::make('f', 'o', 'o'), $result);
 	}

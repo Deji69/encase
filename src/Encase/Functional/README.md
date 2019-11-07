@@ -92,7 +92,7 @@ use function Encase\Functional\split;
 
 $array = split('foo');        // returns: ['f', 'o', 'o']
 
-$str = Str::make('foo');      // or: new Str('foo')
+$str = Str::new('foo');      // or: new Str('foo')
 $array = $str->split();       // returns: new Collection(['f', 'o', 'o'])
 $newStr = $str->join(',');    // returns: new Str('f,o,o')
 ```
@@ -100,7 +100,7 @@ $newStr = $str->join(',');    // returns: new Str('f,o,o')
 As you may notice, the two methods had a significant difference when calling `split()`: the function call returned a plain `array` while the method proxy call returned a `Collection` instance for chainability. This is true even if you pass an object to a function - in this example, a plain `array` is returned rather than a `Collection` instance:
 
 ```php
-split(Str::make('foo'));      // returns: ['f', 'o', 'o']
+split(Str::new('foo'));      // returns: ['f', 'o', 'o']
 ```
 
 If you require minimal overhead speed you may prefer the functions and dealing with POD types over the object-oriented methods. No Functional function will ever return a Functional OOP object. However, the niceties of OOP and method chaining have their benefits for more writing more presentable and less verbose code.
@@ -110,7 +110,7 @@ If you require minimal overhead speed you may prefer the functions and dealing w
 While Functional object methods mostly just proxy calls to Functional functions, they also handle any necessary type conversions to and from Functional objects where appropriate to allow for intuitive chaining:
 
 ```php
-Str::make('a.b.c.d')->split('.')->join(',');   // returns: new Str('a,b,c,d')
+Str::new('a.b.c.d')->split('.')->join(',');   // returns: new Str('a,b,c,d')
 ```
 
 ### Non-mutability
@@ -137,7 +137,7 @@ Functions in this library like to treat strings as arrays of unicode characters.
 
 ```php
 // forget that slice and split exist for a second...
-$string = Str::make('he✔ll✖o');
+$string = Str::new('he✔ll✖o');
 $array = [];
 
 $string->each(function ($char) {

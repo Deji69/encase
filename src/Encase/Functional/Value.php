@@ -149,7 +149,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 * @param  mixed  ...$value
 	 * @return static|self
 	 */
-	public static function make(...$value)
+	public static function new(...$value)
 	{
 		if (\func_num_args() === 1) {
 			if ($value[0] instanceof static) {

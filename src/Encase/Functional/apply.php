@@ -31,7 +31,7 @@ function apply($subject, $func, ...$args)
 	);
 
 	if (!$func instanceof Func) {
-		$func = Func::make($func);
+		$func = Func::new($func);
 
 		if ($func->isInternal() && !$func->isVariadic()) {
 			if ($nargs = $func->getNumberOfRequiredParameters()) {

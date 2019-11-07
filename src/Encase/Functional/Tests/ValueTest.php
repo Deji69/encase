@@ -10,7 +10,7 @@ class ValueTest extends TestCase
 	 */
 	public function testConstruction($value)
 	{
-		$val = Value::make($value);
+		$val = Value::new($value);
 		$this->assertSame($value, $val->get());
 	}
 
@@ -19,13 +19,13 @@ class ValueTest extends TestCase
 	 */
 	public function testIsTypeProxiedFunctionalMethod($value, $type)
 	{
-		$val = Value::make($value);
+		$val = Value::new($value);
 		$this->assertSame($type, $val->isType($type));
 	}
 
 	public function testFunctionalMethodReturningInstanceProxying()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$sum = 0;
 
 		$value->each(function ($val) use (&$sum) {
@@ -37,19 +37,19 @@ class ValueTest extends TestCase
 
 	public function testIsMethod()
 	{
-		$this->assertTrue(Value::make(123)->is(123));
-		$this->assertFalse(Value::make(123)->is('123'));
+		$this->assertTrue(Value::new(123)->is(123));
+		$this->assertFalse(Value::new(123)->is('123'));
 	}
 
 	public function testEqualsMethod()
 	{
-		$this->assertTrue(Value::make(123)->equals('123'));
-		$this->assertFalse(Value::make('123')->equals('-123'));
+		$this->assertTrue(Value::new(123)->equals('123'));
+		$this->assertFalse(Value::new('123')->equals('-123'));
 	}
 
 	public function testSizeMethod()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$size = $value->size();
 
 		$this->assertSame(3, $size);
@@ -57,17 +57,17 @@ class ValueTest extends TestCase
 
 	public function testSliceMethod()
 	{
-		$value = Value::make('foo bar');
+		$value = Value::new('foo bar');
 		$result = $value->slice(0, 3);
 		$this->assertInstanceOf(Value::class, $result);
 		$this->assertSame('foo', $result->get());
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$this->assertSame([1, 2], $value->slice(0, 2)->get());
 	}
 
 	public function testShiftMethod()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$result = $value->shift();
 		$this->assertSame(1, $result);
 		$this->assertSame([2, 3], $value->get());
@@ -75,7 +75,7 @@ class ValueTest extends TestCase
 
 	public function testPopMethod()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$result = $value->pop();
 		$this->assertSame(3, $result);
 		$this->assertSame([1, 2], $value->get());
@@ -83,21 +83,21 @@ class ValueTest extends TestCase
 
 	public function testConcatMethod()
 	{
-		$value = Value::make('foo ');
+		$value = Value::new('foo ');
 		$result = $value->concat('bar');
 		$this->assertInstanceOf(Value::class, $result);
 		$this->assertNotSame($value, $result);
 		$this->assertSame('foo bar', $result->get());
 
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$result = $value->concat(4, 5);
 		$this->assertSame([1, 2, 3, 4, 5], $result->get());
 	}
 
 	public function testConcatMethodWithAnotherValue()
 	{
-		$value = Value::make('foo ');
-		$another = Value::make('bar');
+		$value = Value::new('foo ');
+		$another = Value::new('bar');
 		$result = $value->concat($another);
 		$this->assertInstanceOf(Value::class, $result);
 		$this->assertNotSame($value, $result);
@@ -107,13 +107,13 @@ class ValueTest extends TestCase
 
 	public function testCountable()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$this->assertSame(3, count($value));
 	}
 
 	public function testIterable()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$expect = 1;
 
 		foreach ($value as $key => $val) {
@@ -123,7 +123,7 @@ class ValueTest extends TestCase
 
 	public function testBoxedIterable()
 	{
-		$value = Value::make([1, 2, 3]);
+		$value = Value::new([1, 2, 3]);
 		$sum = 0;
 		$keys = 0;
 
@@ -142,10 +142,10 @@ class ValueTest extends TestCase
 	{
 		$obj1 = (object)['a' => 1, 'b' => 2];
 
-		$value = Value::make($obj1);
+		$value = Value::new($obj1);
 		$this->assertSame($obj1, $value->get());
 
-		$value = Value::make([$obj1]);
+		$value = Value::new([$obj1]);
 		$this->assertSame($obj1, $value[0]->get());
 	}
 
@@ -153,7 +153,7 @@ class ValueTest extends TestCase
 	{
 		$called = false;
 
-		$value = Value::make(function () use (&$called) {
+		$value = Value::new(function () use (&$called) {
 			$called = true;
 		});
 
