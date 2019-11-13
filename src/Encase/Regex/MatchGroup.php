@@ -1,56 +1,73 @@
 <?php
 namespace Encase\Regex;
 
+use Countable;
+use ArrayAccess;
 use LogicException;
+use InvalidArgumentException;
 
-class MatchGroup
+class MatchGroup implements ArrayAccess, Countable
 {
 	/** @var Match[] */
 	protected $matches = [];
 
+	/**
+	 * Construct a sub-match group.
+	 *
+	 * @param Match[] $matches
+	 */
 	public function __construct(array $matches = [])
 	{
 		foreach ($matches as $match) {
-			$this->matches[] = new Match($match[0], $match[1]);
-		}
-		for ($i = 0; $i < \count($matches); ++$i) {
-			if ($i === 0) {
-				parent::__construct($matches[0]);
-				$end = $this->offset + \strlen($this->string);
-			} else {
-				$subMatches = [$matches[$i]];
-
-				for (; \count($matches) > ($i) && $matches[$i + 1][1] < $end; ++$i) {
-					$subMatches[] = $matches[$i + 1];
-				}
-
-				if (\count($subMatches) > 1) {
-					$this->groups[] = new MatchGroup($subMatches);
-				} else {
-					$this->groups[] = new Match($subMatches[0]);
-				}
+			if (!$match instanceof Match) {
+				throw new InvalidArgumentException(
+					'Array must contain only Match instances'
+				);
 			}
 		}
+
+		$this->matches = $matches;
 	}
 
+	/**
+	 * Get a sub-match.
+	 *
+	 * @param  int $index
+	 * @return Match
+	 */
 	public function getMatch(int $index): Match
 	{
 		return $this->matches[$index];
 	}
 
+	/**
+	 * Count the number of sub-matches.
+	 *
+	 * @return int
+	 */
 	public function count()
 	{
 		return \count($this->matches);
 	}
 
-	public function offsetExists($offset)
+	/**
+	 * Check if a sub-match exists at `$index`.
+	 *
+	 * @param  int $offset
+	 * @return bool
+	 */
+	public function offsetExists($index)
 	{
-		return isset($this->matches[$offset]);
+		return isset($this->matches[$index]);
 	}
 
+	/**
+	 * @param  int $offset
+	 * @return Match
+	 */
 	public function offsetGet($offset)
 	{
-		return $this->matches[$offset];
+		return $this->getMatch($offset);
 	}
 
 	public function offsetSet($offset, $value)
@@ -63,10 +80,25 @@ class MatchGroup
 		throw new LogicException('Attempting to write to immutable '.\get_class().' object');
 	}
 
-	public static function fromResults(array $matches)
+	public static function fromResults(array $results)
 	{
-		foreach ($matches as $match) {
+		$matches = [];
+		$result = \array_shift($results);
+		$end = \strlen($result[0]) + (int)$result[1];
 
+		while ($subResult = \reset($results)) {
+			$string = $subResult[0];
+			$offset = (int)$subResult[1];
+
+			if ($offset >= $end) {
+				break;
+			}
+
+			$subMatchGroup = static::fromResults($results);
+			$matches[] = new Match($string, $offset, $subMatchGroup);
+			$results = \array_slice($results, $subMatchGroup->count() + 1);
 		}
+
+		return new static($matches);
 	}
 }

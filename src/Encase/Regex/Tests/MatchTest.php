@@ -1,13 +1,13 @@
 <?php
 namespace Encase\Regex\Tests;
 
-use Encase\Regex\MatchGroup;
+use Encase\Regex\Match;
 
 class MatchTest extends TestCase
 {
-	public function testConstruct()
+	public function testConstructFromResults()
 	{
-		$match = new MatchGroup([
+		$match = Match::fromResults([
 			['hello', 0],
 			['hell', 0],
 			['he', 0],
@@ -20,7 +20,7 @@ class MatchTest extends TestCase
 		$this->assertCount(2, $match[0]);
 		$this->assertSame('he', $match[0][0]->getString());
 		$this->assertSame('ll', $match[0][1]->getString());
-		$this->assertSame('0', $match[1]->getString());
+		$this->assertSame('o', $match[1]->getString());
 		$this->assertCount(0, $match[1]);
 	}
 }
