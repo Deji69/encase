@@ -28,7 +28,6 @@
 			"/Performance/"
 		],
 		"files": [
-			"_.php",
 			"accumulate.php",
 			"apply.php",
 			"assertType.php",
@@ -45,9 +44,7 @@
 			"join.php",
 			"last.php",
 			"map.php",
-			"match.php",
 			"not.php",
-			"pattern.php",
 			"pop.php",
 			"shift.php",
 			"size.php",
@@ -58,8 +55,7 @@
 			"typeOf.php",
 			"union.php",
 			"unique.php",
-			"values.php",
-			"when.php"
+			"values.php"
 		]
 	},
 	"autoload-dev": {
