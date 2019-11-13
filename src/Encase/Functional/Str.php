@@ -10,9 +10,9 @@ class Str extends Value
 		'float' => 'string',
 	];
 
-	public function __construct(string $value = '')
+	public function __construct($value = '')
 	{
-		parent::__construct($value);
+		$this->value = (string)$value;
 	}
 
 	public static function make(...$value)

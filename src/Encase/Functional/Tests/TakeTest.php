@@ -2,7 +2,6 @@
 namespace Encase\Functional\Tests;
 
 use function Encase\Functional\take;
-use function Encase\Functional\match;
 use function Encase\Functional\isType;
 
 class TakeTest extends TestCase
@@ -21,12 +20,12 @@ class TakeTest extends TestCase
 				}
 
 				$result = take($values, $count);
-				$test = match($checkType, [
-					'same' => [$this, 'assertSame'],
-					'equals' => [$this, 'assertEquals'],
-					'notSame' => [$this, 'assertNotSame'],
-					'notEquals' => [$this, 'assertNotEquals'],
-				]);
+				$test = [
+					'same' => [self::class, 'assertSame'],
+					'equals' => [self::class, 'assertEquals'],
+					'notSame' => [self::class, 'assertNotSame'],
+					'notEquals' => [self::class, 'assertNotEquals'],
+				][$checkType];
 				$test($expectArray, $result);
 			}
 		}
