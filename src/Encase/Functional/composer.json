@@ -19,6 +19,9 @@
 		"mockery/mockery": "^1.2",
 		"phpunit/phpunit": "^8.1"
 	},
+	"suggest": {
+		"encase/regex": "Regex pattern integration in functions such as split()."
+	},
 	"autoload": {
 		"psr-4": {
 			"Encase\\Functional\\": ""

@@ -48,8 +48,12 @@ class SplitTest extends TestCase
 
 	public function testSplitByRegex()
 	{
-		$string = 'hel.lo|wor/ld';
-		$result = split($string, Regex::new('/[^\w]/'));
-		$this->assertSame(['hel', 'lo', 'wor', 'ld'], $result);
+		if (\class_exists(Regex::class)) {
+			$string = 'hel.lo|wor/ld';
+			$result = split($string, Regex::new('/[^\w]/'));
+			$this->assertSame(['hel', 'lo', 'wor', 'ld'], $result);
+		} else {
+			$this->markTestSkipped('Optional Encase\Regex dependency missing.');
+		}
 	}
 }
