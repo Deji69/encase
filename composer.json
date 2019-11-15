@@ -58,6 +58,9 @@
 			"Encase\\Tests\\": "tests/Tests"
 		}
 	},
+	"scripts": {
+		"test": "vendor/bin/phpunit"
+	},
 	"config": {
 		"sort-packages": true
 	},
