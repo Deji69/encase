@@ -45,11 +45,13 @@
 			"src/Encase/Functional/split.php",
 			"src/Encase/Functional/take.php",
 			"src/Encase/Functional/toArray.php",
-			"src/Encase/Functional/Type.php",
 			"src/Encase/Functional/typeOf.php",
 			"src/Encase/Functional/union.php",
 			"src/Encase/Functional/unique.php",
-			"src/Encase/Functional/values.php"
+			"src/Encase/Functional/values.php",
+			"src/Encase/Matching/Support/_.php",
+			"src/Encase/Matching/Support/match.php",
+			"src/Encase/Matching/Support/pattern.php"
 		]
 	},
 	"autoload-dev": {
