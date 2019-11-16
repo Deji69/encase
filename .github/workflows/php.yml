@@ -75,7 +75,7 @@ jobs:
       - name: "Dump Xdebug filter with phpunit/phpunit"
         run: vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
 
-      - name: "Collect code coverage with Xdebug and phpunit/phpunit"
+      - name: "Collect code coverage with Xdebug   and phpunit/phpunit"
         run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --prepend=.build/phpunit/xdebug-filter.php
 
       - name: "Send code coverage report to Codecov.io"

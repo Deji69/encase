@@ -23,4 +23,10 @@
 			<directory>./src/Encase/*/Tests</directory>
 		</testsuite>
 	</testsuites>
+	
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory>./src</directory>
+		</whitelist>
+	</filter>
 </phpunit>
