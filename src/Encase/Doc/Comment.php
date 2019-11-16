@@ -50,7 +50,7 @@ class Comment
 	 */
 	public function __construct($source)
 	{
-		$this->source = Str::make($source)->apply('trim');
+		$this->source = Str::new($source)->apply('trim');
 		$this->isInline = $this->source->slice(0, 2)->is('//');
 		$this->isDocBlock = $this->source->slice(0, 3)->is('/**');
 	}
