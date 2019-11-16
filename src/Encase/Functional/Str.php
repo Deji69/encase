@@ -15,9 +15,9 @@ class Str extends Value
 		$this->value = (string)$value;
 	}
 
-	public static function make(...$value)
+	public static function new(...$value)
 	{
-		return parent::make(implode('', $value));
+		return parent::new(\implode('', $value));
 	}
 
 	/**
