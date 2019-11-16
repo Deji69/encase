@@ -51,3 +51,34 @@ jobs:
         
       - name: Run test suite
         run: composer run-script test
+
+  code-coverage:
+    name: "Code Coverage"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v1
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: php7.3-composer-locked-${{ github.sha }}
+          restore-keys: |
+            php7.3-composer-locked-
+
+      - name: "Install locked dependencies with composer"
+        run: composer install --no-interaction --no-progress --no-suggest
+
+      - name: "Dump Xdebug filter with phpunit/phpunit"
+        run: vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
+
+      - name: "Collect code coverage with Xdebug and phpunit/phpunit"
+        run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --prepend=.build/phpunit/xdebug-filter.php
+
+      - name: "Send code coverage report to Codecov.io"
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
