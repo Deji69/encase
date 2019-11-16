@@ -26,10 +26,10 @@
 	
 	<filter>
 		<whitelist addUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./src/Encase/*</directory>
+			<directory>./src</directory>
 			<exclude>
-				<directory>./src/*/*/Tests</directory>
-				<directory>./src/*/*/vendor</directory>
+				<directory>./src/Encase/*/Tests</directory>
+				<directory>./src/Encase/*/vendor</directory>
 			</exclude>
 		</whitelist>
 	</filter>
