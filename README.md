@@ -1,6 +1,7 @@
 Encase Framework
 ================
 [![Build Status](https://travis-ci.org/Deji69/encase.svg?branch=master)](https://travis-ci.org/Deji69/encase) 
+[![Status](https://github.com/Deji69/encase/workflows/.github/workflows/php.yml/badge.svg)](https://github.com/Deji69/encase/actions)
 [![codecov](https://codecov.io/gh/Deji69/encase/branch/master/graph/badge.svg)](https://codecov.io/gh/Deji69/encase)
 
 ## Components
