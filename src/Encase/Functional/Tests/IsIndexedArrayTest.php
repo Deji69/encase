@@ -24,4 +24,9 @@ class IsIndexedArrayTest extends TestCase
 	{
 		$this->assertFalse(isIndexedArray([3 => 0, 2 => 1, 1 => 2]));
 	}
+
+	public function testWithIndexStringKeyedArray()
+	{
+		$this->assertTrue(isIndexedArray(['1' => 0, '0' => 1, '2' => 2]));
+	}
 }
