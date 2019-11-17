@@ -9,7 +9,8 @@ namespace Encase\Functional;
  * @param  mixed $value
  * @return bool  True if `$value` is an indexed array, otherwise false.
  */
-function isIndexedArray($value) {
+function isIndexedArray($value)
+{
 	if (!\is_array($value)) {
 		return false;
 	}
