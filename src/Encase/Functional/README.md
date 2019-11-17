@@ -16,6 +16,7 @@ Encase Functional Library
 - [String Treatment](#string-treatment)
   - [Encoding](#encoding)
 - [Boxing](#boxing)
+  - [Boxing vs. Construction via `::new()`](#boxing-vs-construction-via-new)
 - [Types](#types)
   - [`BoxIterator`](#boxiterator)
     - [Example](#example)
@@ -173,6 +174,19 @@ $value = $str->get();         // returns: '123'
 See the information in the sub-sections of [Types](#types) for documentation of which Functional types box which native types and the conversions that are accepted.
 
 The `box` method automatically prevents double-boxing, so you will never end up with box-ception.
+
+## Boxing vs. Construction via `::new()`
+
+Functional classes provide two static methods for constructing objects, `::box()` as defined above, and `::new()` which is more equivalent to PHP's `new` operator. The `::new()` method, for example with `Str::new('abc')`, is mostly used as an alternative syntax to `new Str('abc')`. The main advanteage of using this method over the operator is the ability to chaing methods without wrapping in an extra pair of parentheses, as demonstrated below:
+
+```php
+(new Str('abc'))->split();  // unpleasant extra parentheses required
+Str::new('abc')->split();   // similar to Rust and looks nice in editor
+```
+
+There may be other additional features provided by the `::new` method that are not provided by raw `new` operator construction. These differences depend on the particular class. However, generally the `::new()` method will provide more features and the `new` operator will do things as simply as possible (meaning less overhead). The general recommendation is to prefer the `::new()` method whenever performance is not a major issue (unless the extra features are needed).
+
+The difference between `::box()` is another notable aspect. The purpose of `::box()` is largely to promote values automatically to the correct Functional class, whereas `::new()` should be preferred if you already know the class. Nothing stops you from doing `Str::box()` (which is just a `Value::box()` alias) instead of `Str::new()`, but you don't get any additional benefits.
 
 # Types
 
