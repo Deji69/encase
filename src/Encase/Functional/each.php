@@ -11,7 +11,7 @@ namespace Encase\Functional;
  * Any non-null return value of $func will end the loop early and its value
  * will be returned by this function.
  *
- * @param  iterable|stdClass|string
+ * @param  iterable|stdClass|string $iterable
  * @param  mixed  $func Value where `isType($func, 'function')` is TRUE.
  * @return null|mixed  A value returned by `$func` or null if no return.
  */
