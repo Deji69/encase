@@ -69,6 +69,18 @@ class Type
 	}
 
 	/**
+	 * Create a Type representing the given type/class.
+	 *
+	 * @param  string|null $type The type to represent.
+	 * @param  string|null $class The class to represent.
+	 * @return self
+	 */
+	public static function new($type, $class = null)
+	{
+		return new self($type, $class);
+	}
+
+	/**
 	 * Create a Type representing the type/class of `$var`.
 	 *
 	 * @param  mixed $var
