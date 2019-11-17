@@ -59,7 +59,6 @@ function slice($value, ?int $start, int $end = null)
 		} else {
 			// Fall back to a foreach by building an array out of the iterator. If
 			// we have a positive $size we can stop early and return that array.
-			// If not, we'll fall back with array_slice with a $start of 0.
 			$output = [];
 
 			foreach ($value as $key => $val) {
