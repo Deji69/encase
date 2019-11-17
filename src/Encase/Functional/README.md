@@ -26,10 +26,15 @@ Encase Functional Library
   - [`Number`](#number)
   - [`Str`](#str)
     - [Static Methods](#static-methods)
-  - [`Value`](#value)
+  - [`Type`](#type)
+    - [Public Members](#public-members)
     - [Static Methods](#static-methods-1)
     - [Methods](#methods)
+  - [`Value`](#value)
+    - [Static Methods](#static-methods-2)
+    - [Methods](#methods-1)
 - [Functions](#functions)
+  - [`accumulate`](#accumulate)
   - [`apply`](#apply)
     - [Behavioural difference with PHP internal functions](#behavioural-difference-with-php-internal-functions)
   - [`assertType`](#asserttype)
@@ -39,17 +44,24 @@ Encase Functional Library
   - [`fill`](#fill)
   - [`find`](#find)
   - [`first`](#first)
+  - [`isAssociativeArray`](#isassociativearray)
+  - [`isIndexedArray`](#isindexedarray)
+  - [`isSequentialArray`](#issequentialarray)
   - [`isType`](#istype)
     - [Types checked](#types-checked)
   - [`join`](#join)
   - [`last`](#last)
   - [`map`](#map)
+  - [`not`](#not)
   - [`pop`](#pop)
   - [`shift`](#shift)
   - [`size`](#size)
   - [`slice`](#slice)
   - [`split`](#split)
-  - [`type`](#type)
+  - [`take`](#take)
+  - [`takeUntil`](#takeuntil)
+  - [`takeWhile`](#takewhile)
+  - [`typeOf`](#typeof)
   - [`union`](#union)
   - [`unique`](#unique)
   - [`values`](#values)
@@ -190,11 +202,11 @@ There may be other additional features provided by the `::new` method that are n
 
 # Types
 
-Most types provided in this library are designed to be used as objects with functional methods, similarly to the core objects in JavaScript.
+Most types provided in this library are designed to be used as objects with functional methods, similarly to the core objects in JavaScript. Many of the classes have static methods too, and as of writing are solely used to construct instances of the class in varying ways.
 
 ## `BoxIterator`
 
-An array iterator which boxes elements appropriately upon accessing them. For example, a string element is boxed into a `Str` instance upon accessing, and an array to a `Collection` instance:
+An array iterator which [boxes](#boxing) elements appropriately upon accessing them. For example, a string element is boxed into a `Str` instance upon accessing, and an array to a `Collection` instance:
 
 ### Example
 
@@ -303,6 +315,37 @@ A value wrapper for PHP strings which can be used to manage integer and float va
   * `new($str)` - Create a string from the argument
   * `random($length = 16)` - Create a random string of the given length
 
+## `Type`
+
+Represents the types in PHPs type system. PHPs type system somehow includes the possibility that types are "unknown" (see [gettype](https://www.php.net/manual/en/function.gettype.php)). For this probably unlikely case, `NULL` is assigned to the members of this class.
+
+See this [StackOverflow answer](https://stackoverflow.com/a/2488923/1202953) for information on "unknown" types and how they may no longer be possible since PHP 7.2.
+
+This class implements the magic method `__toString()`, which returns the name of the represented type or `'unknown type'` if it is unknown (`NULL`).
+
+### Public Members
+
+  * `string|null $type` - The name of the represented type. `NULL` if the type is unknown.
+  * `string|null $class` - The class of the represented obect (if `$type` is `'object'`, otherwise `NULL`).
+
+### Static Methods
+
+  * `new($type, $class = null): Type` - Creates a `Type` representing the type `$type` and the class `$class` (or no class if `null`).
+  * `of($var): Type` - Creates a `Type` representing the type of `$var`.
+
+If any other static method not listed is called, it is interpreted as a call to `new` where the static method name is the `$type` argument and an argument to the static call is the `$class` argument. For example:
+
+```php
+Type::int();               // equivalent to: Type::new('int')
+Type::string();            // equivalent to: Type::new('string')
+Type::object('My\Class');  // equivalent to: Type::new('object', 'My\Class')
+```
+
+### Methods
+
+  * `equals(Type $type): bool` - Returns `TRUE` if the two `Type` objects represent the same type. Returns `FALSE` if not, or if either type is "unknown".
+  * `is($var): bool` - Returns `TRUE` if the type of the given variable is the same as what is represented by this `Type` object.
+
 ## `Value`
 
 Implements: `ArrayAccess`, `Countable`, `IteratorAggregate`, `JsonSerializable`  
@@ -336,6 +379,31 @@ This is a list of the functions provided by the library. Most of these are commo
 All functions try to make maximum use of native PHP features as well as possible and aim to be flexible in their usability. One example of this is how many functions expecting `array`-like subjects will accept strings and treat them as arrays of unicode characers.
 
 **REMEMBER:** Most of these functions can be called as methods on any `Value`-derived type (or user class using the `Encase\Functional\Functional` trait). When called as methods, the contained value is always passed to the function as the first argument.
+
+## `accumulate`
+`accumulate($iterable, mixed $initial = null, callable $func = null): mixed`
+
+Iterates over `$iterable`, calling `$func` each time in order to mutate `$initial`, and returns the resulting value of `$initial`. Each call to `$func` passes the current, mutated value of `$initial`, followed by the `$iterable` element value, then the key, and finally the `$iterable` itself, and the return value is assigned to `$initial` and used for the next call, or returned from this function.
+
+**Example: Default behaviours with various types**
+```php
+// default numeric behaviour is to sum all elements
+accumulate([1, 2, 3], 10);                // returns: 16
+// default string behaviour is to concatenate all elemnts
+accumulate([' my', ' friend'], 'hello');  // returns: 'hello my friend'
+// default array behaviour is to append all elemnts
+accumulate(['b', 'c'], ['a']);            // returns: ['a', 'b', 'c']
+// otherwise, the latst $iterable element is returned
+accumulate(['a', 'b', 'c']);              // returns: 'c'
+```
+
+**Example: Using custom predicates**
+```php
+// returns the product: 1 * 2 * 3 * 4 = 24
+accumulate([2, 3, 4], 1, function ($current, $value, $key, $iterable) {
+    return $current * $value;
+});
+```
 
 ## `apply`
 `apply(mixed $subject, callable $func, mixed ...$args): mixed`
@@ -530,6 +598,46 @@ $string = first('§abc');    // returns: §
 $int = first([1, 2, 3]);    // returns: 1
 ```
 
+## `isAssociativeArray`
+`isAssociativeArray(mixed $value): bool`
+
+Checks if `$value` is an array and it is deemed associative. Note that this may not mean what you expect, as *indexed arrays which are not sequential, starting from 0* are considered associative by this function. Thus, this is the opposite of [isSequentialArray](#issequentialarray), not [isIndexedArray](#isindexedarray).
+
+**Example**
+```php
+isAssociativeArray(['a', 'b', 'c']);        // false
+isAssociativeArray(['a' => 0]);             // true (has string keys)
+isAssociativeArray([1 => 'a', 0 => 'b']);   // true (integer keys, but not ordered)
+isAssociativeArray([1 => 'a', 2 => 'b']);   // true (first key is not 0)
+```
+
+## `isIndexedArray`
+`isIndexedArray(mixed $value): bool`
+
+Checks if `$value` is an array and is indexed. An array is considered indexed if it has only integral keys ranging from 0 to the length of the array (exclusive, therefore `[0, \count($value))`), regardless of order.
+
+In other words, it returns `FALSE` if any of the keys is not a valid index. A way to know whether a key is a valid index is: if `\array_values` was used, could the key be used to access the resulting array?
+
+*Note: PHP does not distinguish numeric string keys and integers, thus even if you use numeric strings, the array is indexed if the numbers conform to these rules.*
+
+**Example**
+```php
+isIndexedArray(['a', 'b', 'c']);        // true: sequential and indexed
+isIndexedArray([1 => 'b', 0 => 'a']);   // true: non-sequential, but indexed
+isIndexedArray([1 => 'nope']);          // false: the key 1 is out of range
+```
+
+## `isSequentialArray`
+`isSequentialArray(mixed $value): bool`
+
+Checks if `$value` is an array and is sequentially indexed. An array is considered sequential if it has only integral keys in the range `[0, \count($value))` (just like [isIndexedArray](#isindexedarray)), and those keys are in-order.
+
+**Example**
+```php
+isSequentialArray([0 => 'a', 1 => 'b', 2 => 'c']);  // true: sequential and indexed
+isSequentialArray([1 => 'a', 0 => 'b', 2 => 'c');   // false: indexes not in order
+```
+
 ## `isType`
 `isType(mixed $value, string|string[] $types): string|FALSE`
 
@@ -625,6 +733,11 @@ Trim whitespace from a whole array of strings.
 $values = [' trim ', ' these ', ' strings'];
 map($values, 'trim');     // returns: ['trim', 'these', 'strings']
 ```
+
+## `not`
+`not(callable $predicate): \Closure`
+
+Returns a `\Closure` that calls `$predicate` with the same arguments passed to it, but applies a boolean negation to the return value. Thus, if `$predicate` would have returned `TRUE`/truthy for a call, `FALSE` is returned instead, and vice-versa.
 
 ## `pop`
 `pop(array|string|\ArrayAccess|\Traversable|\stdClass &$arrayish): mixed`
@@ -733,8 +846,23 @@ $array = split('hel.lo|wor/ld', Regex::new('/[^\w]/'));
 // $array === ['hel', 'lo', 'wor', 'ld']
 ```
 
-## `type`
-`type(mixed $value): string`
+## `take`
+`take(string|iterable|\stdClass $iterable, int $count): string|iterable|\stdClass`
+
+Gets the first `$count` elements of `$iterable`. Equivalent to `slice($iterable, 0, $count)` (see [slice](#slice)).
+
+## `takeUntil`
+`takeUntil(string|iterable|\stdClass $iterable, callable $predicate): string|iterable|\stdClass`
+
+Same as [takeWhile](#takewhile), except that [not](#not) is applied to the predicate, thus it stops when the `$predicate` returns a truthy value on a call.
+
+## `takeWhile`
+`takeWhile(string|iterable|\stdClass $iterable, callable $predicate): string|iterable|\stdClass`
+
+Gets a slice of `$iterable` from beginning up until the `$predicate` returns a falsey value on a call. The `$predicate` callable is called in the same manner as with [each](#each), passing the value and key of each element, followed by the `$iterable`.
+
+## `typeOf`
+`typeOf(mixed $value): string`
 
 Gets the type of the variable based on which of PHP's is_* checks returns true (rather than using `gettype`). Returns `'function'` for closure objects but does not work with other callables as those are strings and arrays first.
 
@@ -773,7 +901,7 @@ unique($array);   // ['val1', 'val2', 'val3', 'key1' => 1, 'key2' => 1, 'key3' =
 ```
 
 ## `values`
-`values(\Traversable|iterable|stdClass|null $iterable): string`
+`values(\Traversable|iterable|stdClass|null $iterable): \Traversable|iterable|stdClass|null`
 
 Re-index the traversable, array or object. Equivalent to calling `map($iterable)` or `\array_values($iterable)` on arrays.
 
