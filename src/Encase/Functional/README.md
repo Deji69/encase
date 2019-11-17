@@ -2,6 +2,7 @@ Encase Functional Library
 =========================
 
 [![Build Status](https://api.travis-ci.org/Deji69/encase-functional.svg?branch=master)](https://travis-ci.org/Deji69/encase)
+![](https://github.com/Deji69/encase/workflows/.github/workflows/php.yml/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/encase/functional/v/stable)](https://packagist.org/packages/encase/functional)
 [![Total Downloads](https://poser.pugx.org/encase/functional/downloads)](https://packagist.org/packages/encase/functional)
 [![License](https://poser.pugx.org/encase/functional/license)](https://packagist.org/packages/encase/functional)
