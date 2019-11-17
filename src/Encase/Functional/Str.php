@@ -15,11 +15,6 @@ class Str extends Value
 		$this->value = (string)$value;
 	}
 
-	public static function new($value = '')
-	{
-		return parent::new($value);
-	}
-
 	/**
 	 * Box value into a string wrapper instance.
 	 *
