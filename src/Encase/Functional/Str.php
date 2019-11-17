@@ -15,9 +15,9 @@ class Str extends Value
 		$this->value = (string)$value;
 	}
 
-	public static function new(...$value)
+	public static function new($value = '')
 	{
-		return parent::new(\implode('', $value));
+		return parent::new($value);
 	}
 
 	/**
@@ -42,6 +42,6 @@ class Str extends Value
 	{
 		$str = \random_bytes($length);
 		$str = \str_replace(['/', '+', '='], '', \base64_encode($str));
-		return parent::box($str);
+		return new static($str);
 	}
 }
