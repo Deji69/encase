@@ -32,13 +32,7 @@ function pop(&$arrayish)
 	}
 
 	if ($type === '\ArrayAccess') {
-		if ($arrayish instanceof \IteratorAggregate) {
-			$iterator = $arrayish->getIterator();
-			$value = \end($iterator);
-			$key = \key($iterator);
-		} else {
-			foreach ($arrayish as $key => $value) {
-			}
+		foreach ($arrayish as $key => $value) {
 		}
 
 		unset($arrayish[$key]);
