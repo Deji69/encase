@@ -9,7 +9,7 @@
 		}
 	],
 	"require": {
-		"php": "^7.4",
+		"php": "^7.2",
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
@@ -51,8 +51,11 @@
 			"src/Encase/Functional/unique.php",
 			"src/Encase/Functional/values.php",
 			"src/Encase/Matching/Support/_.php",
+			"src/Encase/Matching/Support/any.php",
+			"src/Encase/Matching/Support/key.php",
 			"src/Encase/Matching/Support/match.php",
-			"src/Encase/Matching/Support/pattern.php"
+			"src/Encase/Matching/Support/val.php",
+			"src/Encase/Matching/Support/when.php"
 		]
 	},
 	"autoload-dev": {
