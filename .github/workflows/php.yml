@@ -16,7 +16,7 @@ jobs:
     
     strategy:
       matrix:
-        php-binary: [php7.2, php7.3]
+        php-binary: [php7.2, php7.3, php7.4]
         dependencies: [lowest, locked, highest]
         
     steps:
