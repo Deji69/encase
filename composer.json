@@ -9,10 +9,11 @@
 		}
 	],
 	"require": {
-		"php": "^7.2",
+		"php": "^7.4",
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
+		"php": "^7.4",
 		"mockery/mockery": "^1.3",
 		"phpbench/phpbench": "@dev",
 		"phpunit/phpunit": "^8.1"
@@ -48,7 +49,15 @@
 			"src/Encase/Functional/typeOf.php",
 			"src/Encase/Functional/union.php",
 			"src/Encase/Functional/unique.php",
-			"src/Encase/Functional/values.php"
+			"src/Encase/Functional/values.php",
+			"src/Encase/Matching/Support/_.php",
+			"src/Encase/Matching/Support/all.php",
+			"src/Encase/Matching/Support/any.php",
+			"src/Encase/Matching/Support/at.php",
+			"src/Encase/Matching/Support/key.php",
+			"src/Encase/Matching/Support/match.php",
+			"src/Encase/Matching/Support/val.php",
+			"src/Encase/Matching/Support/when.php"
 		]
 	},
 	"autoload-dev": {

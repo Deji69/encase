@@ -1,6 +1,18 @@
 <?php
 namespace Encase\Functional;
 
+/**
+ * Dynamically represents a type in PHPs type system.
+ *
+ * @method static self array()
+ * @method static self bool()
+ * @method static self float()
+ * @method static self int()
+ * @method static self null()
+ * @method static self object(string $class = null)
+ * @method static self resource()
+ * @method static self string()
+ */
 class Type
 {
 	const TYPES = [
@@ -15,8 +27,13 @@ class Type
 
 	public function __construct(string $type, string $class = null)
 	{
-		$this->type = \in_array($type, self::TYPES, true) ? $type : null;
-		$this->class = $this->type === 'object' ? $class : null;
+		if (\in_array($type, self::TYPES, true)) {
+			$this->type = $type;
+			$this->class = $this->type === 'object' ? $class : null;
+		} else {
+			$this->type = 'object';
+			$this->class = $type;
+		}
 	}
 
 	/**
@@ -35,20 +52,25 @@ class Type
 	 * If the type is an object, also checks they are the same class.
 	 * If either type is unknown, returns FALSE.
 	 *
-	 * @param  Type $type
+	 * @param  Type|string $type `Type`, or string representing the type.
+	 * @param  string|null $class If `$type` is `'object'`, this can set the class.
 	 * @return bool
 	 */
-	public function equals(Type $type)
+	public function equals($type, string $class = null)
 	{
-		if (!isset($this->type, $type->type)) {
+		if ($type instanceof $type) {
+			$class = $type->class;
+			$type = $type->type;
+		}
+		if (empty($this->type) || empty($type)) {
 			return false;
 		}
-		return $this->type === $type->type
-		    && $this->class === $type->class;
+		return $this->type === $type
+		    && $this->class === $class;
 	}
 
 	/**
-	 * Determine if `$var` is an instance of this Type.
+	 * Check if `$var` is an instance of this Type.
 	 *
 	 * Returns TRUE if `typeOf($var)` is the same as the type this Type
 	 * represents. If they are both objects, uses `instanceof` to also check if
@@ -57,7 +79,7 @@ class Type
 	 * @param  mixed $var
 	 * @return bool
 	 */
-	public function is($var)
+	public function check($var)
 	{
 		if (typeOf($var) === $this->type) {
 			if ($this->type === 'object' && $this->class !== null) {
@@ -95,11 +117,11 @@ class Type
 	/**
 	 * Create a new type using the name of the called static method.
 	 *
-	 * Convenience wrapper around `new Type((string)$type, ...$arguments)`.
+	 * Convenience wrapper around `new Type((string)$typeName, ...$arguments)`.
 	 *
-	 * @param  string $type
+	 * @param  string $typeName
 	 * @param  array $arguments [string $class]
-	 * @return Type
+	 * @return self
 	 *
 	 * @example To create a Type representing a string.
 	 * ```php
@@ -111,8 +133,8 @@ class Type
 	 * Type::object('My\OwnClass')
 	 * ```
 	 */
-	public static function __callStatic($type, $arguments): Type
+	public static function __callStatic($typeName, $arguments): Type
 	{
-		return new Type((string)$type, ...$arguments);
+		return new self((string)$typeName, ...$arguments);
 	}
 }
