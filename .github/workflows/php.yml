@@ -16,7 +16,7 @@ jobs:
     
     strategy:
       matrix:
-        php-binary: [php7.2, php7.3, php7.4]
+        php-binary: [php7.4]
         dependencies: [lowest, locked, highest]
         
     steps:
@@ -65,9 +65,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.composer/cache
-          key: php7.3-composer-locked-${{ github.sha }}
+          key: php7.4-composer-locked-${{ github.sha }}
           restore-keys: |
-            php7.3-composer-locked-
+            php7.4-composer-locked-
 
       - name: "Install locked dependencies with composer"
         run: composer install --no-interaction --no-progress --no-suggest
