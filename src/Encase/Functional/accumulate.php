@@ -15,7 +15,7 @@ namespace Encase\Functional;
  * array type, this will append all elements. Otherwise, the last element of
  * `$iterable` is returned.
  *
- * @param  iterable|stdClass|string $iterable
+ * @param  iterable|\stdClass|string $iterable
  * @param  mixed $initial Value initially passed to `$predicate`
  * @param  mixed $predicate Function which transforms `$initial`
  * @return mixed

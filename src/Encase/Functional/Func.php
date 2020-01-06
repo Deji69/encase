@@ -11,6 +11,7 @@ use ReflectionFunctionAbstract;
  * Also provides reflection information on the underlying function/generator.
  *
  * @method static box(callable $value)
+ * @method \Closure|callable get(callable $value)
  */
 class Func extends Value
 {
