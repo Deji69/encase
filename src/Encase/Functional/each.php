@@ -16,36 +16,29 @@ namespace Encase\Functional;
  */
 function each($iterable, $func)
 {
-	if (empty($iterable)) {
-		return null;
-	}
+	if (!empty($iterable)) {
+		if ($type = assertType(
+			$iterable,
+			['iterable', 'stdClass', 'string'],
+			'iterable'
+		)) {
+			if ($type === 'string') {
+				$string = $iterable;
+				$iterable = split($string);
+			}
 
-	$type = assertType(
-		$iterable,
-		['iterable', 'stdClass', 'string'],
-		'iterable'
-	);
+			foreach ($iterable as $key => $value) {
+				$result = $func(
+					$value,
+					$key,
+					$type === 'string' ? $string : $iterable
+				);
 
-	if (!$type) {
-		return null;
-	}
-
-	if ($type === 'string') {
-		$string = $iterable;
-		$iterable = split($string);
-	}
-
-	foreach ($iterable as $key => $value) {
-		$result = $func(
-			$value,
-			$key,
-			$type === 'string' ? $string : $iterable
-		);
-
-		if ($result !== null) {
-			return $result;
+				if ($result !== null) {
+					return $result;
+				}
+			}
 		}
 	}
-
 	return null;
 }
