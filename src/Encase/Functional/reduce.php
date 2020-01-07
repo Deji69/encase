@@ -2,56 +2,70 @@
 namespace Encase\Functional;
 
 /**
- * Calls `$predicate` for each elemnt of `$iterable`, using the return value
- * for the next call, ultimately returning the last result of the predicate.
+ * Calls `$reducer` for each element of `$iterable`, using the return value
+ * for the next call, ultimately returning the last result of the reducer.
  *
- * Each time `$predicate` is called, it is passed `$initial` or the return
+ * Each time `$reducer` is called, it is passed `$initial` or the return
  * value of the last call, followed by the current `$iterable` element value,
  * the element key, and the `$iterable` itself.
  *
- * If `$predicate` is not provided, a default predicate will be used based on
- * the type of `$initial`. For a numeric type, this will perform a sum of all
- * elements. For a string type, this will concatenate all elements. For an
- * array type, this will append all elements. Otherwise, the last element of
- * `$iterable` is returned.
+ * If `$initial` is `null` then it is initialised with the first value in
+ * `$iterable`, and `$reducer` is not called for it.
+ *
+ * If `$reducer` is `null`, a default reducer will be used based on the tpye of
+ * `$initial`. For a numeric type, this will perform a sum of all elements. For
+ * a string type, this will concatenate all elements. For an array type, this
+ * will append all elements. Otherwise, the last element of `$iterable` is
+ * returned.
  *
  * @param  iterable|\stdClass|string $iterable
- * @param  mixed $initial Value initially passed to `$predicate`
- * @param  mixed $predicate Function which transforms `$initial`
+ * @param  mixed $reducer The reducer function
+ * @param  mixed $initial Initial value. If `null`, this will be initialised
+ *                        with the first value in `$iterable` and `$reducer`
+ *                        will not be called with it.
  * @return mixed
  */
-function reduce($iterable, $initial = null, $predicate = null)
+function reduce($iterable, $reducer = null, $initial = null)
 {
-	if ($predicate === null) {
-		switch (isType('numeric', 'string', 'array')) {
+	if ($initial === null) {
+		$initial = first($iterable);
+		$initialSkip = true;
+	}
+
+	if ($reducer === null) {
+		switch (isType($initial, ['string', 'numeric', 'array'])) {
 			case 'numeric':
-				$predicate = function ($current, $value) {
+				$reducer = function ($current, $value) {
 					return $current + $value;
 				};
-			break;
+				break;
 			case 'string':
-				$predicate = function ($current, $value) {
+				$reducer = function ($current, $value) {
 					return $current . $value;
 				};
-			break;
+				break;
 			case 'array':
-				$predicate = function ($current, $value) {
+				$reducer = function ($current, $value) {
 					$current[] = $value;
 					return $current;
 				};
-			break;
+				break;
 			default:
-				$predicate = function ($current, $value) {
+				$reducer = function ($current, $value) {
 					return $value;
 				};
-			break;
+				break;
 		}
 	}
 
 	each(
 		$iterable,
-		function ($value, $key, $iterable) use (&$initial, $predicate) {
-			$initial = $predicate($initial, $value, $key, $iterable);
+		function ($value, $key, $iterable) use (&$initial, &$initialSkip, $reducer) {
+			if ($initialSkip) {
+				$initialSkip = false;
+			} else {
+				$initial = $reducer($initial, $value, $key, $iterable);
+			}
 		}
 	);
 
