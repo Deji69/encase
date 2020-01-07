@@ -16,23 +16,6 @@ class EachTest extends TestCase
 		$this->mock = m::mock();
 	}
 
-	public function casesEmptyNonIterables()
-	{
-		return [
-			[null],
-			[false],
-			[0],
-		];
-	}
-
-	public function casesNonEmptyNonIterables()
-	{
-		return [
-			[1],
-			[true],
-		];
-	}
-
 	/**
 	 * @dataProvider casesBasic
 	 */
@@ -206,10 +189,27 @@ class EachTest extends TestCase
 		];
 	}
 
+	public function casesEmptyNonIterables()
+	{
+		return [
+			[null],
+			[false],
+			[0],
+		];
+	}
+
+	public function casesNonEmptyNonIterables()
+	{
+		return [
+			[1],
+			[true],
+		];
+	}
+
 	public function casesInvalidArgumentExceptions()
 	{
 		yield 'With zero number' => [
-			'iterable' => 0,
+			'iterable' => 2,
 			'type' => 'integer',
 		];
 		yield 'With number' => [
