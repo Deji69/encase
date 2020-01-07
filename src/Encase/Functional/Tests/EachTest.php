@@ -3,6 +3,7 @@ namespace Encase\Functional\Tests;
 
 use Mockery as m;
 use function Encase\Functional\each;
+use Encase\Functional\Exceptions\InvalidTypeError;
 
 class EachTest extends TestCase
 {
@@ -13,6 +14,23 @@ class EachTest extends TestCase
 	{
 		parent::setUp();
 		$this->mock = m::mock();
+	}
+
+	public function casesEmptyNonIterables()
+	{
+		return [
+			[null],
+			[false],
+			[0],
+		];
+	}
+
+	public function casesNonEmptyNonIterables()
+	{
+		return [
+			[1],
+			[true],
+		];
 	}
 
 	/**
@@ -65,6 +83,36 @@ class EachTest extends TestCase
 			}
 		});
 		$this->assertSame(2, $result);
+	}
+
+	/** @dataProvider casesEmptyNonIterables */
+	public function testDoesNothingWithEmptyNonIterables($value)
+	{
+		$called = false;
+		each($value, function () use (&$called) {
+			$called = true;
+		});
+		$this->assertFalse($called);
+	}
+
+	/** @dataProvider casesNonEmptyNonIterables */
+	public function testErrorsWithNonEmptyNonIterables($value)
+	{
+		$type = \is_object($value) ? \get_class($value) : \gettype($value);
+
+		$this->expectException(InvalidTypeError::class);
+		$this->expectExceptionMessage(
+			"Argument 0 (\$iterable) of Encase\\Functional\\each expects "
+			."iterable, stdClass or string, $type given"
+		);
+
+		$called = false;
+
+		each($value, function () use (&$called) {
+			$called = true;
+		});
+
+		$this->assertFalse($called);
 	}
 
 	public function testWithString()

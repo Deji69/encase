@@ -2,35 +2,48 @@
 namespace Encase\Functional;
 
 /**
- * Calls `$func` on each element of $iterable with the elements value, key and
- * the `$iterable` as arguments.
+ * Calls `$func` on each element of `$iterable` with the elements value, key
+ * and the `$iterable` as arguments.
  *
  * If `$iterable` is a string, it is split into unicode characters first and
- * the indicies are passed to $func as keys.
+ * the indicies are passed to `$func` as keys.
  *
- * Any non-null return value of $func will end the loop early and its value
- * will be returned by this function.
+ * `$func` may perform an early return by returning any non-null value.
  *
  * @param  iterable|stdClass|string $iterable
  * @param  mixed  $func Value where `isType($func, 'function')` is TRUE.
- * @return null|mixed  A value returned by `$func` or null if no return.
+ * @return null|mixed  A value returned by `$func` or null if no early return.
  */
-function each($iterable, $func, $all = false)
+function each($iterable, $func)
 {
-	$type = assertType($iterable, ['iterable', 'stdClass', 'string', 'null'], 'iterable');
+	if (empty($iterable)) {
+		return null;
+	}
 
-	if (!empty($iterable)) {
-		if ($type === 'string') {
-			$string = $iterable;
-			$iterable = split($string);
-		}
+	$type = assertType(
+		$iterable,
+		['iterable', 'stdClass', 'string'],
+		'iterable'
+	);
 
-		foreach ($iterable as $key => $value) {
-			$result = $func($value, $key, $type === 'string' ? $string : $iterable);
+	if (!$type) {
+		return null;
+	}
 
-			if ($result !== null) {
-				return $result;
-			}
+	if ($type === 'string') {
+		$string = $iterable;
+		$iterable = split($string);
+	}
+
+	foreach ($iterable as $key => $value) {
+		$result = $func(
+			$value,
+			$key,
+			$type === 'string' ? $string : $iterable
+		);
+
+		if ($result !== null) {
+			return $result;
 		}
 	}
 
