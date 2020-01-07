@@ -63,11 +63,8 @@ jobs:
       - name: Run test suite
         run: composer run-script test
 
-      - name: "Dump Xdebug filter with phpunit/phpunit"
-        run: ./phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
-
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: ./phpunit --coverage-clover=coverage.xml --prepend=.build/phpunit/xdebug-filter.php
+        run: ./phpunit --coverage-clover=coverage.xml
 
       - name: "Send code coverage report to Codecov.io"
         env:
