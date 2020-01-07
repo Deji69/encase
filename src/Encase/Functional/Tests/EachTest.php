@@ -149,7 +149,7 @@ class EachTest extends TestCase
 	 */
 	public function testTypeAssertions($value, $type)
 	{
-		$this->expectException(\InvalidArgumentException::class);
+		$this->expectException(InvalidTypeError::class);
 		$this->expectExceptionMessage(
 			"Argument 0 (\$iterable) of Encase\\Functional\\each expects ".
 			"iterable, stdClass or string, $type given"
