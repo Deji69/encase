@@ -31,7 +31,6 @@
 			"/Performance/"
 		],
 		"files": [
-			"accumulate.php",
 			"apply.php",
 			"assertType.php",
 			"box.php",
@@ -49,6 +48,7 @@
 			"map.php",
 			"not.php",
 			"pop.php",
+			"reduce.php",
 			"shift.php",
 			"size.php",
 			"slice.php",
