@@ -10,7 +10,7 @@ namespace Encase\Functional;
  *
  * `$func` may perform an early return by returning any non-null value.
  *
- * @param  iterable|stdClass|string $iterable
+ * @param  iterable|\stdClass|string $iterable
  * @param  mixed  $func Value where `isType($func, 'function')` is TRUE.
  * @return null|mixed  A value returned by `$func` or null if no early return.
  */
