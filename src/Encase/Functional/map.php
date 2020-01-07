@@ -10,6 +10,9 @@ namespace Encase\Functional;
  *
  * To preserve array or object keys, pass true to `$preserveKeys`.
  *
+ * `$iterable` may be mutated only if it is an object and `$func` mutates its
+ * 4th parameter.
+ *
  * @param  \Traversable|iterable|\stdClass|null  $iterable
  *         Array or object to iterate over.
  * @param  callable|\Encase\Functional\Func|null $func
