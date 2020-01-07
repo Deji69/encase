@@ -20,7 +20,7 @@ namespace Encase\Functional;
  * @param  mixed $predicate Function which transforms `$initial`
  * @return mixed
  */
-function accumulate($iterable, $initial = null, $predicate = null)
+function reduce($iterable, $initial = null, $predicate = null)
 {
 	if ($predicate === null) {
 		switch (isType('numeric', 'string', 'array')) {

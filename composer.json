@@ -23,7 +23,6 @@
 			"Encase\\": "src/Encase/"
 		},
 		"files": [
-			"src/Encase/Functional/accumulate.php",
 			"src/Encase/Functional/apply.php",
 			"src/Encase/Functional/assertType.php",
 			"src/Encase/Functional/box.php",
@@ -40,6 +39,7 @@
 			"src/Encase/Functional/last.php",
 			"src/Encase/Functional/map.php",
 			"src/Encase/Functional/pop.php",
+			"src/Encase/Functional/reduce.php",
 			"src/Encase/Functional/shift.php",
 			"src/Encase/Functional/size.php",
 			"src/Encase/Functional/slice.php",
