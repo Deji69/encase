@@ -34,6 +34,10 @@ class Type
 			$this->type = 'object';
 			$this->class = $type;
 		}
+
+		if (!empty($this->class) && $this->class[0] === '\\') {
+			$this->class = \substr($this->class, 1);
+		}
 	}
 
 	/**
@@ -48,9 +52,8 @@ class Type
 	}
 
 	/**
-	 * Determine if the two Type objects represent the same type.
-	 * If the type is an object, also checks they are the same class.
-	 * If either type is unknown, returns FALSE.
+	 * Checks whether the Type object represents the given type/class, or that
+	 * they are equivalent to another Type objects type/class.
 	 *
 	 * @param  Type|string $type `Type`, or string representing the type.
 	 * @param  string|null $class If `$type` is `'object'`, this can set the class.
