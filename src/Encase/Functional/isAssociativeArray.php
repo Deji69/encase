@@ -12,5 +12,8 @@ function isAssociativeArray($value) {
 	if (!\is_array($value)) {
 		return false;
 	}
+	if (empty($value)) {
+		return true;
+	}
 	return !isSequentialArray($value);
 }
