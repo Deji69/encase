@@ -50,12 +50,14 @@ function find($value, $pred = null, int $offset = 0)
 		}
 
 		if (\is_array($value)) {
-			if ($offset) {
-				$value = \array_slice($value, $offset, null, true);
-			}
+			if (!\is_callable($pred)) {
+				if ($offset) {
+					$value = \array_slice($value, $offset, null, true);
+				}
 
-			$key = \array_search($pred, $value, true);
-			return $key !== false ? [$key, $value[$key]] : false;
+				$key = \array_search($pred, $value, true);
+				return $key !== false ? [$key, $value[$key]] : false;
+			}
 		} elseif ($type === 'string' && !\function_exists('mb_strpos')) {
 			$pos = \mb_strpos($value, $pred, $offset);
 			return $pos !== false ? [$pos, \mb_substr($value, $pos, 1)] : false;
