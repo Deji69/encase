@@ -37,7 +37,7 @@ function find($value, $pred = null, int $offset = 0)
 		return false;
 	}
 
-	if (\is_null($pred)) {
+	if ($pred === null) {
 		$pred = function ($value) {
 			return $value != false;
 		};
@@ -50,46 +50,35 @@ function find($value, $pred = null, int $offset = 0)
 		$pred = function ($value) use ($pred) {
 			return $pred($value);
 		};
-	}
+	} elseif (!$predIsFunction) {
+		if (\is_array($value)) {
+			if ($offset) {
+				$value = \array_slice($value, $offset, null, true);
+			}
 
-	if ($type === 'string') {
-		if (!\function_exists('mb_strpos')) {
+			$key = \array_search($pred, $value, true);
+			return $key !== false ? [$key, $value[$key]] : false;
+		} elseif ($type === 'string' && !\function_exists('mb_strpos')) {
+			$pos = \mb_strpos($value, $pred, $offset);
+			return $pos !== false ? [$pos, \mb_substr($value, $pos, 1)] : false;
+		} else {
 			$pred = function ($value) use ($pred) {
 				return $value === $pred;
 			};
 
-			$predIsFunction = 'function';
+			$predIsFunction = true;
 		}
-
-		if ($predIsFunction) {
-			$iterable = new \LimitIterator(new \ArrayIterator(split($value)), $offset);
-
-			$result = each($iterable, function ($char, $index) use ($pred) {
-				if ($pred($char, $index)) {
-					return [$index, $char];
-				}
-			});
-
-			return $result !== null ? $result : false;
-		}
-
-		$pos = \mb_strpos($value, $pred, $offset);
-		return $pos !== false ? [$pos, \mb_substr($value, $pos, 1)] : false;
 	}
 
-	if (\is_array($value) && !$predIsFunction) {
-		if ($offset) {
-			$value = \array_slice($value, $offset, null, true);
+	$eachFn = function ($char, $index) use ($pred) {
+		if ($pred($char, $index)) {
+			return [$index, $char];
 		}
+	};
 
-		$key = \array_search($pred, $value, true);
-		return $key !== false ? [$key, $value[$key]] : false;
-	}
-
-	if (!\is_callable($pred)) {
-		$pred = function ($value) use ($pred) {
-			return $value === $pred;
-		};
+	if ($type === 'string') {
+ 		$iterable = new \LimitIterator(new \ArrayIterator(split($value)), $offset);
+		return each($iterable, $eachFn) ?? false;
 	}
 
 	if ($value instanceof \IteratorAggregate) {
@@ -99,12 +88,5 @@ function find($value, $pred = null, int $offset = 0)
 	}
 
 	$iterable = new \LimitIterator($iterator, $offset);
-
-	foreach ($iterable as $key => $val) {
-		if ($pred($val, $key)) {
-			return [$key, $val];
-		}
-	}
-
-	return false;
+	return each($iterable, $eachFn) ?? false;
 }
