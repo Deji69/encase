@@ -37,20 +37,18 @@ function find($value, $pred = null, int $offset = 0)
 		return false;
 	}
 
-	if ($pred === null) {
-		$pred = function ($value) {
-			return $value != false;
-		};
-	}
-
-	$predIsFunction = isType($pred, 'function');
-
 	// Prevent also passing the index to PHP internal functions.
 	if ($pred instanceof Func && $pred->isInternal()) {
 		$pred = function ($value) use ($pred) {
 			return $pred($value);
 		};
-	} elseif (!$predIsFunction) {
+	} elseif (!isType($pred, 'function')) {
+		if ($pred === null) {
+			$pred = function ($value) {
+				return $value != false;
+			};
+		}
+
 		if (\is_array($value)) {
 			if ($offset) {
 				$value = \array_slice($value, $offset, null, true);
@@ -65,8 +63,6 @@ function find($value, $pred = null, int $offset = 0)
 			$pred = function ($value) use ($pred) {
 				return $value === $pred;
 			};
-
-			$predIsFunction = true;
 		}
 	}
 
