@@ -21,7 +21,7 @@ jobs:
           - locked
           - highest
           
-    name: PHP ${{ matrix.php-version }} Test on ${{ matrix.operating-system }}
+    name: PHP ${{ matrix.php-version }}, ${{ matrix.dependencies }}, ${{ matrix.operating-system }}
     
     steps:
       - name: "Checkout"
