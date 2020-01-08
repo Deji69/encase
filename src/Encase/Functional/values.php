@@ -3,7 +3,7 @@ namespace Encase\Functional;
 
 /**
  * Re-index the traversable, array or object. Equivalent to calling
- * map($iterable).
+ * `map($iterable)`.
  *
  * @param  \Traversable|iterable|stdClass|null $iterable
  * @return $iterable
