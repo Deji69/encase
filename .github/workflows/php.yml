@@ -73,5 +73,7 @@ jobs:
       
       - name: "Push subpackage changes"
         run: |
+          git remote add -f Functional git@github.com:Deji69/Encase-Functional.git
+          git remote add -f Matching git@github.com:Deji69/Encase-Matching.git
           git subtree push --prefix=src/Encase/Functional Functional master
           git subtree push --prefix=src/Encase/Matching Matching master
