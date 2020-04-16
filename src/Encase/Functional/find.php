@@ -76,7 +76,7 @@ function find($value, $pred = null, int $offset = 0)
 
 	if ($type === 'string') {
  		$iterable = new \LimitIterator(new \ArrayIterator(split($value)), $offset);
-		return each($iterable, $eachFn) ?? false;
+		return each($iterable, $eachFn, true) ?? false;
 	}
 
 	if ($value instanceof \IteratorAggregate) {
@@ -86,5 +86,5 @@ function find($value, $pred = null, int $offset = 0)
 	}
 
 	$iterable = new \LimitIterator($iterator, $offset);
-	return each($iterable, $eachFn) ?? false;
+	return each($iterable, $eachFn, true) ?? false;
 }

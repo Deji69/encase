@@ -8,13 +8,15 @@ namespace Encase\Functional;
  * If `$iterable` is a string, it is split into unicode characters first and
  * the indicies are passed to `$func` as keys.
  *
- * `$func` may perform an early return by returning any non-null value.
+ * `$func` may perform an early return by returning any non-null value if
+ * `$earlyExit` is TRUE. The returned value will be returned by this function.
  *
  * @param  iterable|\stdClass|string $iterable
  * @param  mixed  $func Value where `isType($func, 'function')` is TRUE.
+ * @param  bool  $earlyExit
  * @return null|mixed  A value returned by `$func` or null if no early return.
  */
-function each($iterable, $func)
+function each($iterable, $func, $earlyExit = false)
 {
 	if (!empty($iterable)) {
 		if ($type = assertType(
@@ -34,7 +36,7 @@ function each($iterable, $func)
 					$type === 'string' ? $string : $iterable
 				);
 
-				if ($result !== null) {
+				if ($earlyExit && $result !== null) {
 					return $result;
 				}
 			}

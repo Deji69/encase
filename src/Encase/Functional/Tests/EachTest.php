@@ -52,7 +52,7 @@ class EachTest extends TestCase
 			if ($value == 'b') {
 				return false;
 			}
-		});
+		}, true);
 
 		$this->assertFalse($result);
 		$this->assertSame(['a', 'b'], $output);
@@ -64,8 +64,8 @@ class EachTest extends TestCase
 			if ($value === 2) {
 				return $value;
 			}
-		});
-		$this->assertSame(2, $result);
+		}, true);
+		$this->assertSame(2, $result, true);
 	}
 
 	/** @dataProvider casesEmptyNonIterables */
