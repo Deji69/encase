@@ -70,3 +70,8 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash) || true
+      
+      - name: "Push subpackage changes"
+        run: |
+          git subtree push --prefix=src/Encase/Functional Functional master
+          git subtree push --prefix=src/Encase/Matching Matching master
