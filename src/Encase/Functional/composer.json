@@ -41,6 +41,7 @@
 			"first.php",
 			"isAssociativeArray.php",
 			"isIndexedArray.php",
+			"isIntKeyedArray.php",
 			"isSequentialArray.php",
 			"isStringKeyedArray.php",
 			"isType.php",

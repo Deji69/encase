@@ -32,6 +32,7 @@
 			"src/Encase/Functional/first.php",
 			"src/Encase/Functional/isAssociativeArray.php",
 			"src/Encase/Functional/isIndexedArray.php",
+			"src/Encase/Functional/isIntKeyedArray.php",
 			"src/Encase/Functional/isSequentialArray.php",
 			"src/Encase/Functional/isStringKeyedArray.php",
 			"src/Encase/Functional/isType.php",
@@ -68,7 +69,12 @@
 		}
 	},
 	"scripts": {
-		"test": "phpunit"
+		"test": "phpunit",
+		"deploy": [
+			"git push",
+			"git subtree push --prefix=src/Encase/Functional Functional master",
+			"git subtree push --prefix=src/Encase/Matching Matching master"
+		]
 	},
 	"config": {
 		"sort-packages": true
