@@ -42,6 +42,7 @@
 			"isAssociativeArray.php",
 			"isIndexedArray.php",
 			"isSequentialArray.php",
+			"isStringKeyedArray.php",
 			"isType.php",
 			"join.php",
 			"last.php",

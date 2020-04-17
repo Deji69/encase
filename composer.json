@@ -33,6 +33,7 @@
 			"src/Encase/Functional/isAssociativeArray.php",
 			"src/Encase/Functional/isIndexedArray.php",
 			"src/Encase/Functional/isSequentialArray.php",
+			"src/Encase/Functional/isStringKeyedArray.php",
 			"src/Encase/Functional/isType.php",
 			"src/Encase/Functional/join.php",
 			"src/Encase/Functional/last.php",
