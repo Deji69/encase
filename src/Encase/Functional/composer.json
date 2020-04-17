@@ -36,6 +36,7 @@
 			"box.php",
 			"concat.php",
 			"each.php",
+			"except.php",
 			"fill.php",
 			"find.php",
 			"first.php",

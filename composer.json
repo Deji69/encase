@@ -27,6 +27,7 @@
 			"src/Encase/Functional/box.php",
 			"src/Encase/Functional/concat.php",
 			"src/Encase/Functional/each.php",
+			"src/Encase/Functional/except.php",
 			"src/Encase/Functional/fill.php",
 			"src/Encase/Functional/find.php",
 			"src/Encase/Functional/first.php",
