@@ -20,10 +20,13 @@ class ExceptTest extends TestCase
 
 	public function casesBasic()
 	{
+		$isVowel = function ($v) {
+			return \in_array($v, split('aeiou'));
+		};
 		return [
 			[[1, 2, 3], 2, [1, 3]],
 			[[1, 2, null, 3, null], null, [1, 2, 3]],
-			['The quick brown fox jumped', fn($v) => \in_array($v, split('aeiou')), 'Th qck brwn fx jmpd']
+			['The quick brown fox jumped', $isVowel, 'Th qck brwn fx jmpd']
 		];
 	}
 }
