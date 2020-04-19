@@ -3,7 +3,6 @@ namespace Encase\Functional\Traits;
 
 use function Encase\Functional\each;
 use function Encase\Functional\isType;
-use function Encase\Functional\assertType;
 
 /**
  * Proxies method calls to \Encase\Functional functions.
