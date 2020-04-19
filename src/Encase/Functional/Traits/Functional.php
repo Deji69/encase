@@ -35,7 +35,7 @@ trait Functional
 	 * Box a value into a managed wrapper.
 	 *
 	 * @param  mixed  $value
-	 * @return self|Str|Collection|Func
+	 * @return self|static
 	 */
 	public static function box($value)
 	{
