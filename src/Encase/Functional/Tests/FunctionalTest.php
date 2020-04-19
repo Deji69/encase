@@ -5,8 +5,8 @@ use BadMethodCallException;
 use Encase\Functional\Tests\TestCase;
 use Encase\Functional\Traits\Functional;
 
-function foo() {}
-function bar() {}
+function foo() { return 'foo'; }
+function bar() { return 'bar'; }
 
 class FunctionalTest extends TestCase
 {
@@ -45,7 +45,15 @@ class FunctionalTest extends TestCase
 	{
 		$object = TestClassWithStaticMethod::foo();
 		$this->assertInstanceOf(TestClassWithStaticMethod::class, $object);
-		$object->bar();
+		$this->assertSame('bar', $object->bar());
+	}
+
+	public function testIncludedMethodWithBoxedReturnCannotBeCalledNonStatically()
+	{
+		$this->expectException(BadMethodCallException::class);
+		$this->expectExceptionMessage('Method Encase\\Functional\\Tests\\TestClassWithStaticMethod::foo does not exist');
+		$object = TestClassWithStaticMethod::foo();
+		$object->foo();
 	}
 
 	public function testFunctionCanBeExcluded()
@@ -105,7 +113,7 @@ class TestClassWithStaticMethod
 		return ['Encase\\Functional\\Tests\\'];
 	}
 
-	private static function getStaticMethodNames(): array
+	private static function getStaticMethodsWithBoxedReturns(): array
 	{
 		return ['foo'];
 	}

@@ -116,7 +116,7 @@ trait Functional
 	 */
 	protected static function callFunctionalMethod(&$subject, $method, $args)
 	{
-		$function = static::getMethodFunction($method);
+		$function = static::getMethodFunction($method, true);
 		$result = $function($subject, ...$args);
 
 		if (!self::isFunctionAMutator($function) || $result instanceof self) {
@@ -132,7 +132,12 @@ trait Functional
 	{
 		$function = static::getMethodFunction($method);
 		$result = $function(...$args);
-		return static::box($result);
+
+		if (\in_array($method, static::getStaticMethodsWithBoxedReturns())) {
+			return static::box($result);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -140,17 +145,29 @@ trait Functional
 	 * this class.
 	 *
 	 * @param string $method
+	 * @param bool $ignoreBoxedStatics If TRUE, static methods with boxed
+	 *                                 returns are ignored.
 	 * @return string|null
 	 * @throws \BadMethodCallException If method doesn't exist.
 	 */
-	private static function getMethodFunction(string $method): ?string
+	private static function getMethodFunction(string $method, bool $ignoreBoxedStatics = false): ?string
 	{
-		$function = each(static::getMethodFunctionNamespaces(), function ($namespace) use ($method) {
+		$function = each(static::getMethodFunctionNamespaces(), function ($namespace) use ($method, $ignoreBoxedStatics) {
 			$function = $namespace.$method;
 
-			if (!\in_array($function, static::getFunctionsToExcludeAsMethodCalls()) && \function_exists($function)) {
-				return $function;
+			if (!\function_exists($function)) {
+				return;
 			}
+
+			if (\in_array($function, static::getFunctionsToExcludeAsMethodCalls())) {
+				return;
+			}
+
+			if ($ignoreBoxedStatics && \in_array($method, static::getStaticMethodsWithBoxedReturns())) {
+				return;
+			}
+
+			return $function;
 		}, true);
 
 		if ($function === null) {
@@ -204,6 +221,11 @@ trait Functional
 	}
 
 	protected static function getStaticMethodNames(): array
+	{
+		return [];
+	}
+
+	protected static function getStaticMethodsWithBoxedReturns(): array
 	{
 		return [];
 	}
