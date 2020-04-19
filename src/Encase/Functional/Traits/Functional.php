@@ -166,7 +166,7 @@ trait Functional
 	 *
 	 * @return string[]
 	 */
-	private static function getMethodFunctionNamespaces(): array
+	protected static function getMethodFunctionNamespaces(): array
 	{
 		return [
 			'Encase\\Functional\\',
@@ -179,7 +179,7 @@ trait Functional
 	 *
 	 * @return string[]
 	 */
-	private static function getFunctionsToExcludeAsMethodCalls(): array
+	protected static function getFunctionsToExcludeAsMethodCalls(): array
 	{
 		return [
 			'Encase\\Functional\\assertType',
@@ -187,7 +187,7 @@ trait Functional
 		];
 	}
 
-	private static function getMethodFunctionsThatMutate(): array
+	protected static function getMethodFunctionsThatMutate(): array
 	{
 		return [
 			'Encase\\Functional\\apply',
@@ -201,12 +201,12 @@ trait Functional
 		];
 	}
 
-	private static function getStaticMethodNames(): array
+	protected static function getStaticMethodNames(): array
 	{
 		return [];
 	}
 
-	private static function getTappedMethodFunctions(): array
+	protected static function getTappedMethodFunctions(): array
 	{
 		return [];
 	}
