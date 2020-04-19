@@ -18,11 +18,29 @@ use Encase\Functional\Traits\Functional;
  *
  * Returns from some proxied calls are also wrapped in Value instances.
  *
- * @method int count()
- * @method int size()
- * @method string|bool isType(string|array $type)
  * @method static|$this split(string $separator = '', int $limit = null)
  * @method static|$this type()
+ *
+ * @method mixed  apply(callable $function)
+ * @method self   concat(mixed ...$values)
+ * @method int    count()
+ * @method $this  each(callable $function)
+ * @method self   fill($value, int $length = null)
+ * @method array|false  find(mixed $predOrValue, int $offset)
+ * @method static first()
+ * @method bool|string  isType(string|array $type)
+ * @method string join(?string $separator = ',', string $lastSeparator = null)
+ * @method static last()
+ * @method self   map(callable $function, bool $preserveKeys = false)
+ * @method static pop()
+ * @method static shift()
+ * @method int    size()
+ * @method static slice(?int $begin, int $end = null)
+ * @method static split(string $separator = '', int $limit = null)
+ * @method static type()
+ * @method static union(...$arrayish)
+ * @method static unique(bool $keepKeyed = false, int $sortFlags = \SORT_REGULAR)
+ * @method static values()
  */
 class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
@@ -282,32 +300,19 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 		return (string)$this->value;
 	}
 
-	public static function box($value)
+	public static function cast($value)
 	{
 		if ($value instanceof self) {
 			$value = $value->get();
 		}
 
-		$type = isset(static::$boxedType)
-			? isType($value, \array_keys(static::$boxedType))
-			: isType($value, \array_keys(self::BOX_TYPES));
-
-		if ($type !== false) {
-			if (\is_object($value) && !$value instanceof \Generator) {
-				$value = clone $value;
+		if (self::class === static::class) {
+			if ($type = isType($value, \array_keys(self::BOX_TYPES))) {
+				$boxType = self::BOX_TYPES[$type];
+				return new $boxType($value);
 			}
-
-			$type = static::$boxedType[$type] ?? $type;
-
-			if ($type === 'numeric') {
-				$type = assertType($value, 'numeric', 'value');
-				$value = +$value;
-			}
-
-			$boxType = self::BOX_TYPES[$type];
-			return new $boxType($value);
 		}
 
-		return self::baseBox($value);
+		return $value;
 	}
 }

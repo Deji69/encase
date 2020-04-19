@@ -38,12 +38,20 @@ trait Functional
 	 */
 	public static function box($value)
 	{
-		if ($value instanceof self) {
+		if ($value instanceof static) {
 			return clone $value;
 		}
 
 		if (\is_object($value) && !$value instanceof \Generator) {
 			$value = clone $value;
+		}
+
+		if (\method_exists(static::class, 'cast')) {
+			$value = static::cast($value);
+
+			if ($value instanceof self) {
+				return $value;
+			}
 		}
 
 		return new static($value);
@@ -111,15 +119,10 @@ trait Functional
 		$function = static::getMethodFunction($method);
 		$result = $function($subject, ...$args);
 
-		if (self::isFunctionAMutator($function) && !($result instanceof self)) {
-			if (isset(static::$boxedType) && isType($result, static::$boxedType)) {
-				return new static($result);
+		if (!self::isFunctionAMutator($function) || $result instanceof self) {
+			if (self::isFunctionTapped($function)) {
+				return $subject;
 			}
-			return new self($result);
-		}
-
-		if (self::isFunctionTapped($function)) {
-			return $subject;
 		}
 
 		return $result;
@@ -129,7 +132,7 @@ trait Functional
 	{
 		$function = static::getMethodFunction($method);
 		$result = $function(...$args);
-		return new static($result);
+		return static::box($result);
 	}
 
 	/**

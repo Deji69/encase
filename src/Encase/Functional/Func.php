@@ -1,7 +1,10 @@
 <?php
 namespace Encase\Functional;
 
+use Closure;
 use Generator;
+use ReflectionMethod;
+use ReflectionFunction;
 use ReflectionFunctionAbstract;
 
 /**
@@ -16,11 +19,6 @@ use ReflectionFunctionAbstract;
  */
 class Func extends Value
 {
-	protected static $boxedType = [
-		'callable' => 'callable',
-		'\Generator' => 'callable'
-	];
-
 	/** @var bool */
 	protected $isMethod = false;
 
@@ -34,7 +32,7 @@ class Func extends Value
 	 * Construct a Func using a callable or generator.
 	 * This can be used to disambiguate real functions from strings and arrays.
 	 *
-	 * @param  callable|\Generator $function
+	 * @param  callable|Generator $function
 	 */
 	public function __construct($function)
 	{
@@ -61,7 +59,7 @@ class Func extends Value
 	 */
 	public function isClosure(): bool
 	{
-		return !$this->isGenerator && $this->value instanceof \Closure;
+		return !$this->isGenerator && $this->value instanceof Closure;
 	}
 
 	/**
@@ -127,14 +125,14 @@ class Func extends Value
 	/**
 	 * Get a ReflectionMethod or ReflectionFunction instance for the function.
 	 *
-	 * @return \ReflectionFunctionAbstract
+	 * @return ReflectionFunctionAbstract
 	 */
 	public function getReflection(): ReflectionFunctionAbstract
 	{
 		if (!isset($this->reflection)) {
 			$this->reflection = $this->isMethod ?
-				new \ReflectionMethod($this->value[0], $this->value[1]) :
-				new \ReflectionFunction($this->value);
+				new ReflectionMethod($this->value[0], $this->value[1]) :
+				new ReflectionFunction($this->value);
 		}
 		return $this->reflection;
 	}

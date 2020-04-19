@@ -7,10 +7,6 @@ use function Encase\Functional\split;
 
 class Collection extends Value
 {
-	protected static $boxedType = [
-		'array' => 'array'
-	];
-
 	/**
 	 * Construct a collection.
 	 *

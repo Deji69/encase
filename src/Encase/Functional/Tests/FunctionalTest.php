@@ -10,6 +10,20 @@ function bar() {}
 
 class FunctionalTest extends TestCase
 {
+	public function testBoxing()
+	{
+		$test = TestClassWithValue::box(123);
+		$this->assertInstanceOf(TestClassWithValue::class, $test);
+		$this->assertSame($test->value, 123);
+	}
+
+	public function testBoxingWithCast()
+	{
+		$test = TestClassWithValueCasting::box('123');
+		$this->assertInstanceOf(TestClassWithValue::class, $test);
+		$this->assertSame($test->value, 123);
+	}
+
 	public function testNamespaceCanBeIncluded()
 	{
 		$this->expectNotToPerformAssertions();
@@ -41,6 +55,29 @@ class FunctionalTest extends TestCase
 		$object = new TestClassWithBarFunctionExcluded();
 		$object->foo();
 		$object->bar();
+	}
+}
+
+class TestClassWithValue
+{
+	use Functional;
+
+	public $value;
+
+	public function __construct($value)
+	{
+		$this->value = $value;
+	}
+}
+
+class TestClassWithValueCasting extends TestClassWithValue
+{
+	public static function cast($value)
+	{
+		if (\is_string($value)) {
+			return +$value;
+		}
+		return $value;
 	}
 }
 
