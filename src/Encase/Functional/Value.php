@@ -126,16 +126,17 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	{
 		// Call the Functional function.
 		$result = $this->callFunctionalMethod($this->value, $method, $params);
+		$function = $this->getMethodFunction($method);
 
 		// If the function returns an unmutated copy of its input, we'll return
 		// this instance to allow chaining.
-		if ($this->isMethodTapped($method)) {
+		if ($this->isFunctionTapped($function)) {
 			return $this;
 		}
 
 		// If the function returns a mutated copy of its input, we'll return it
 		// wrapped in a new Value instance to allow chaining.
-		if ($this->isMethodAMutator($method) && !($result instanceof static)) {
+		if ($this->isFunctionAMutator($function) && !($result instanceof static)) {
 			return Value::box($result);
 		}
 

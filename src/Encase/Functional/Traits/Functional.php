@@ -1,6 +1,7 @@
 <?php
 namespace Encase\Functional\Traits;
 
+use function Encase\Functional\each;
 use function Encase\Functional\isType;
 
 /**
@@ -30,35 +31,6 @@ use function Encase\Functional\isType;
 trait Functional
 {
 	/**
-	 * Functions that shouldn't be callable as instance methods.
-	 *
-	 * @var array
-	 */
-	private static $excludeFunctions = [
-		'assertType', 'box'
-	];
-
-	/**
-	 * Functions that return mutated versions of their input.
-	 *
-	 * @var array
-	 */
-	private static $mutatingFunctions = [
-		'map', 'slice', 'split', 'transform',
-		'apply', 'concat',
-		'unique', 'union'
-	];
-
-	/**
-	 * Functions that return their input unmutated.
-	 * For these we can safely return the current instance in method calls.
-	 *
-	 * @var array
-	 */
-	private static $tappedFunctions = [
-	];
-
-	/**
 	 * Call a Functional function using this instance as the first argument.
 	 *
 	 * @param  string  $method
@@ -71,25 +43,25 @@ trait Functional
 	}
 
 	/**
-	 * Check if the given method will mutate its subject.
+	 * Check if the given function will mutate its subject.
 	 *
-	 * @param  string  $method
+	 * @param  string  $function
 	 * @return bool
 	 */
-	protected function isMethodAMutator(string $method): bool
+	private static function isFunctionAMutator(string $function): bool
 	{
-		return \in_array($method, self::$mutatingFunctions);
+		return \in_array($function, static::getMethodFunctionsThatMutate());
 	}
 
 	/**
-	 * Check if the given method will return its first subject argument.
+	 * Check if the given function will return its first subject argument.
 	 *
-	 * @param  string  $method
+	 * @param  string  $function
 	 * @return bool
 	 */
-	protected function isMethodTapped(string $method): bool
+	private static function isFunctionTapped(string $function): bool
 	{
-		return \in_array($method, self::$tappedFunctions);
+		return \in_array($function, static::getTappedMethodFunctions());
 	}
 
 	/**
@@ -101,30 +73,98 @@ trait Functional
 	 * @param  string  $method
 	 * @param  array   $parameters
 	 * @return static|self|$this
+	 * @throws \BadMethodCallException If method doesn't exist.
 	 */
 	protected function callFunctionalMethod(&$subject, $method, $parameters)
 	{
-		$function = 'Encase\\Functional\\'.$method;
+		$function = static::getMethodFunction($method);
 
-		if (!\in_array($method, self::$excludeFunctions) && \function_exists($function)) {
-			$result = $function($subject, ...$parameters);
+		$result = $function($subject, ...$parameters);
 
-			if ($this->isMethodAMutator($method) && !($result instanceof self)) {
-				if (isset(static::$boxedType) && isType($result, static::$boxedType)) {
-					return new static($result);
-				}
-				return new self($result);
+		if ($this->isFunctionAMutator($function) && !($result instanceof self)) {
+			if (isset(static::$boxedType) && isType($result, static::$boxedType)) {
+				return new static($result);
 			}
-
-			if (!$this->isMethodTapped($method)) {
-				return $result;
-			}
-
-			return $subject;
+			return new self($result);
 		}
 
-		throw new \BadMethodCallException(\sprintf(
-			'Method %s::%s does not exist', static::class, $method
-		));
+		if (!self::isFunctionTapped($function)) {
+			return $result;
+		}
+
+		return $subject;
+	}
+
+	/**
+	 * Gets the fully-qualified function name from the method name callable via
+	 * this class.
+	 *
+	 * @param string $method
+	 * @return string|null
+	 * @throws \BadMethodCallException If method doesn't exist.
+	 */
+	private static function getMethodFunction(string $method): ?string
+	{
+		$function = each(static::getMethodFunctionNamespaces(), function ($namespace) use ($method) {
+			$function = $namespace.$method;
+
+			if (!\in_array($function, static::getFunctionsToExcludeAsMethodCalls()) && \function_exists($function)) {
+				return $function;
+			}
+		}, true);
+
+		if ($function === null) {
+			throw new \BadMethodCallException(\sprintf(
+				'Method %s::%s does not exist', static::class, $method
+			));
+		}
+
+		return $function;
+	}
+
+	/**
+	 * Get a list of namespaces where functions can be called as methods of
+	 * this class.
+	 *
+	 * @return string[]
+	 */
+	private static function getMethodFunctionNamespaces(): array
+	{
+		return [
+			'Encase\\Functional\\',
+		];
+	}
+
+	/**
+	 * Get a list of functions which cannot be called as methods of this class
+	 * even if they are in an included namespace.
+	 *
+	 * @return string[]
+	 */
+	private static function getFunctionsToExcludeAsMethodCalls(): array
+	{
+		return [
+			'Encase\\Functional\\assertType',
+			'Encase\\Functional\\box',
+		];
+	}
+
+	private static function getMethodFunctionsThatMutate(): array
+	{
+		return [
+			'Encase\\Functional\\apply',
+			'Encase\\Functional\\concat',
+			'Encase\\Functional\\map',
+			'Encase\\Functional\\slice',
+			'Encase\\Functional\\split',
+			'Encase\\Functional\\transform',
+			'Encase\\Functional\\union',
+			'Encase\\Functional\\unique',
+		];
+	}
+
+	private static function getTappedMethodFunctions(): array
+	{
+		return [];
 	}
 }
