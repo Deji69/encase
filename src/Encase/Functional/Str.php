@@ -22,10 +22,10 @@ class Str extends Value
 	 * @return \Encase\Functional\Str
 	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
 	 */
-	public static function box($value)
+	/*public static function box($value)
 	{
-		return parent::box($value);
-	}
+		return parent::box((string)$value);
+	}*/
 
 	/**
 	 * Generate a random string of the given length.

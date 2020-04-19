@@ -102,18 +102,6 @@ class Collection extends Value
 	}
 
 	/**
-	 * Box value into a collection instance.
-	 *
-	 * @param  mixed  $value
-	 * @return \Encase\Functional\Collection
-	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
-	 */
-	public static function box($value)
-	{
-		return parent::box($value);
-	}
-
-	/**
 	 * Results array of items from Collection or Arrayable.
 	 *
 	 * @param  mixed  $items

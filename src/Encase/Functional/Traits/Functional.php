@@ -3,6 +3,7 @@ namespace Encase\Functional\Traits;
 
 use function Encase\Functional\each;
 use function Encase\Functional\isType;
+use function Encase\Functional\assertType;
 
 /**
  * Proxies method calls to \Encase\Functional functions.
@@ -31,15 +32,46 @@ use function Encase\Functional\isType;
 trait Functional
 {
 	/**
+	 * Box a value into a managed wrapper.
+	 *
+	 * @param  mixed  $value
+	 * @return self|Str|Collection|Func
+	 */
+	public static function box($value)
+	{
+		if ($value instanceof self) {
+			return clone $value;
+		}
+
+		if (\is_object($value) && !$value instanceof \Generator) {
+			$value = clone $value;
+		}
+
+		return new static($value);
+	}
+
+	/**
 	 * Call a Functional function using this instance as the first argument.
 	 *
 	 * @param  string  $method
-	 * @param  array   $parameters
+	 * @param  array   $args
 	 * @return static|$this
 	 */
-	public function __call($method, $parameters)
+	public function __call($method, $args)
 	{
-		return $this->callFunctionalMethod($this, $method, $parameters);
+		return self::callFunctionalMethod($this, $method, $args);
+	}
+
+	/**
+	 * Call a function like a static method and box the result.
+	 *
+	 * @param [type] $name
+	 * @param [type] $args
+	 * @return static|self|mixed
+	 */
+	public static function __callStatic($name, $args)
+	{
+		return self::callFunctionalStaticMethod($name, $args);
 	}
 
 	/**
@@ -69,30 +101,36 @@ trait Functional
 	 * Classes using this trait can override __call and use this to carry out
 	 * functions on an object the class owns.
 	 *
-	 * @param  mixed   $subject
-	 * @param  string  $method
-	 * @param  array   $parameters
+	 * @param  mixed  $subject
+	 * @param  string $method
+	 * @param  array  $args
 	 * @return static|self|$this
 	 * @throws \BadMethodCallException If method doesn't exist.
 	 */
-	protected function callFunctionalMethod(&$subject, $method, $parameters)
+	protected static function callFunctionalMethod(&$subject, $method, $args)
 	{
 		$function = static::getMethodFunction($method);
+		$result = $function($subject, ...$args);
 
-		$result = $function($subject, ...$parameters);
-
-		if ($this->isFunctionAMutator($function) && !($result instanceof self)) {
+		if (self::isFunctionAMutator($function) && !($result instanceof self)) {
 			if (isset(static::$boxedType) && isType($result, static::$boxedType)) {
 				return new static($result);
 			}
 			return new self($result);
 		}
 
-		if (!self::isFunctionTapped($function)) {
-			return $result;
+		if (self::isFunctionTapped($function)) {
+			return $subject;
 		}
 
-		return $subject;
+		return $result;
+	}
+
+	protected static function callFunctionalStaticMethod($method, $args)
+	{
+		$function = static::getMethodFunction($method);
+		$result = $function(...$args);
+		return new static($result);
 	}
 
 	/**
@@ -161,6 +199,11 @@ trait Functional
 			'Encase\\Functional\\union',
 			'Encase\\Functional\\unique',
 		];
+	}
+
+	private static function getStaticMethodNames(): array
+	{
+		return [];
 	}
 
 	private static function getTappedMethodFunctions(): array

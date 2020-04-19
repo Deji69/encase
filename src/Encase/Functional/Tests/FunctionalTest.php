@@ -27,6 +27,13 @@ class FunctionalTest extends TestCase
 		$object->bar();
 	}
 
+	public function testIncludedMethodCanBeMadeStatic()
+	{
+		$object = TestClassWithStaticMethod::foo();
+		$this->assertInstanceOf(TestClassWithStaticMethod::class, $object);
+		$object->bar();
+	}
+
 	public function testFunctionCanBeExcluded()
 	{
 		$this->expectException(BadMethodCallException::class);
@@ -49,5 +56,20 @@ class TestClassWithBarFunctionExcluded
 	private static function getFunctionsToExcludeAsMethodCalls(): array
 	{
 		return ['Encase\\Functional\\Tests\\bar'];
+	}
+}
+
+class TestClassWithStaticMethod
+{
+	use Functional;
+
+	private static function getMethodFunctionNamespaces(): array
+	{
+		return ['Encase\\Functional\\Tests\\'];
+	}
+
+	private static function getStaticMethodNames(): array
+	{
+		return ['foo'];
 	}
 }

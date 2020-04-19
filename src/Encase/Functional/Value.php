@@ -26,9 +26,11 @@ use Encase\Functional\Traits\Functional;
  */
 class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-	use Functional;
+	use Functional {
+		box as private baseBox;
+	}
 
-	public static $boxTypes = [
+	const BOX_TYPES = [
 		'string' => Str::class,
 		'callable' => Func::class,
 		'\Generator' => Func::class,
@@ -161,41 +163,6 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	}
 
 	/**
-	 * Box a value into a managed wrapper.
-	 *
-	 * @param  mixed  $value
-	 * @return self|Str|Collection|Func
-	 */
-	public static function box($value)
-	{
-		if ($value instanceof self) {
-			$value = $value->get();
-		}
-
-		if (\is_object($value) && !$value instanceof \Generator) {
-			$value = clone $value;
-		}
-
-		$types = \array_keys(static::$boxedType ?? self::$boxTypes);
-
-		if (!empty($types)) {
-			if ($type = assertType($value, $types, 'value')) {
-				if (isset(static::$boxedType)) {
-					$type = static::$boxedType[$type];
-
-					if ($type === 'numeric') {
-						assertType($value, 'numeric', 'value');
-						$value = +$value;
-					}
-				}
-				return new self::$boxTypes[$type]($value);
-			}
-		}
-
-		return new static($value);
-	}
-
-	/**
 	 * Serialise the items as an array.
 	 *
 	 * @return array
@@ -313,5 +280,34 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	public function __toString()
 	{
 		return (string)$this->value;
+	}
+
+	public static function box($value)
+	{
+		if ($value instanceof self) {
+			$value = $value->get();
+		}
+
+		$type = isset(static::$boxedType)
+			? isType($value, \array_keys(static::$boxedType))
+			: isType($value, \array_keys(self::BOX_TYPES));
+
+		if ($type !== false) {
+			if (\is_object($value) && !$value instanceof \Generator) {
+				$value = clone $value;
+			}
+
+			$type = static::$boxedType[$type] ?? $type;
+
+			if ($type === 'numeric') {
+				$type = assertType($value, 'numeric', 'value');
+				$value = +$value;
+			}
+
+			$boxType = self::BOX_TYPES[$type];
+			return new $boxType($value);
+		}
+
+		return self::baseBox($value);
 	}
 }

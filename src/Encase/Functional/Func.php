@@ -1,6 +1,7 @@
 <?php
 namespace Encase\Functional;
 
+use Generator;
 use ReflectionFunctionAbstract;
 
 /**
@@ -37,7 +38,9 @@ class Func extends Value
 	 */
 	public function __construct($function)
 	{
-		if ($function instanceof \Generator) {
+		$type = assertType($function, [Generator::class, 'callable'], 'function');
+
+		if ($type === Generator::class) {
 			$this->isGenerator = true;
 			$this->value = function () use ($function) {
 				$result = $function->current();
@@ -134,17 +137,5 @@ class Func extends Value
 				new \ReflectionFunction($this->value);
 		}
 		return $this->reflection;
-	}
-
-	/**
-	 * Box value into a Func instance.
-	 *
-	 * @param  callable  $value
-	 * @return \Encase\Functional\Func
-	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
-	 */
-	public static function box($value)
-	{
-		return parent::box($value);
 	}
 }
