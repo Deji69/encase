@@ -31,6 +31,7 @@
 			"src/Encase/Functional/fill.php",
 			"src/Encase/Functional/find.php",
 			"src/Encase/Functional/first.php",
+			"src/Encase/Functional/flat.php",
 			"src/Encase/Functional/isAssociativeArray.php",
 			"src/Encase/Functional/isIndexedArray.php",
 			"src/Encase/Functional/isIntKeyedArray.php",
