@@ -69,6 +69,18 @@ class TypeTest extends TestCase
 		}
 	}
 
+	public function testAnnotate()
+	{
+		$this->assertSame('int(5)', Type::annotate(5));
+		$this->assertSame('float(3.1)', Type::annotate(3.1));
+		$this->assertSame('string(\'foobar\')', Type::annotate('foobar'));
+		$this->assertSame('object(stdClass)', Type::annotate(new \stdClass(['foo' => 'bar'])));
+		$this->assertSame('[1, 2, 3]', Type::annotate([1, 2, 3]));
+		$this->assertSame('[1, 2, 3, ..., 7, 8, 9]', Type::annotate([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+		$this->assertSame('[\'foo\' => \'bar\']', Type::annotate(['foo' => 'bar']));
+		$this->assertSame('[0 => 1, 3 => 2, 4 => 3]', Type::annotate([1, 3 => 2, 3]));
+	}
+
 	public function casesConstruction()
 	{
 		return [

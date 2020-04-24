@@ -15,6 +15,9 @@ namespace Encase\Functional;
  */
 class Type
 {
+	const SCALAR_TYPES = [
+		'bool', 'float', 'int', 'string'
+	];
 	const TYPES = [
 		'array', 'bool', 'float', 'int', 'null', 'object', 'resource', 'string'
 	];
@@ -91,6 +94,50 @@ class Type
 			return true;
 		}
 		return false;
+	}
+
+	public static function annotate($var): string
+	{
+		$type = typeOf($var);
+
+		if (\in_array($type, self::SCALAR_TYPES)) {
+			if ($type === 'string') {
+				$var = '\''.\addcslashes($var, '\'').'\'';
+			}
+			return "$type($var)";
+		} elseif ($type === 'object') {
+			return "$type(".\get_class($var).")";
+		} elseif ($type === 'array') {
+			if (\count($var) > 6) {
+				$parts = \array_slice($var, 0, 3, true);
+				$parts = \array_merge($parts, ['...'], \array_slice($var, -3, null, true));
+			} else {
+				$parts = $var;
+			}
+
+			$isSeq = isSequentialArray($parts);
+			$n = 0;
+
+			foreach ($parts as $key => &$part) {
+				$partType = typeOf($part);
+				$v = \in_array($partType, self::SCALAR_TYPES)
+					? (string)$part
+					: self::annotate($part);
+
+				if (++$n === 4 && $part === '...') {
+				} elseif ($partType === 'string') {
+					$v = '\''.\addcslashes($v, '\'').'\'';
+				}
+
+				if (\is_string($key)) {
+					$key = "'$key'";
+				}
+
+				$part = $isSeq ? $v : "$key => $v";
+			}
+			return '['.\implode(', ', $parts).']';
+		}
+		return "$type->type()";
 	}
 
 	/**
