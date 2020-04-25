@@ -137,7 +137,7 @@ class Type
 			}
 			return '['.\implode(', ', $parts).']';
 		}
-		return "$type->type()";
+		return "$type";
 	}
 
 	/**
