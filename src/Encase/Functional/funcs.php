@@ -3,13 +3,14 @@ namespace Encase\Functional;
 
 use Encase\Regex\Patternable;
 use Encase\Functional\Exceptions\InvalidTypeError;
+use ReflectionClass;
 
 /**
  * Invoke the `$func` function on `$subject` with the given arguments.
  *
- * Calls `$func($subject, ...$args)`, but will also clone $subject if it is an
- * object, so as to prevent $func from being able to mutate it. Returns the
- * result of the function call.
+ * Calls `$func($subject, ...$args)`, but will also clone $subject if it is a
+ * cloneable object, so as to prevent $func from being able to mutate it.
+ * Returns the result of the function call.
  *
  * Note that the argument list passed is limited to the number of REQUIRED
  * function parameters, so as to allow PHP internal functions to be used with
@@ -26,12 +27,15 @@ function apply($subject, $func, ...$args)
 {
 	assertType($func, 'callable', 'func');
 
-	\array_unshift(
-		$args,
-		\is_object($subject) && !($subject instanceof \Generator)
-			? clone $subject
-			: $subject
-	);
+	if (\is_object($subject) && !($subject instanceof \Generator)) {
+		$class = new ReflectionClass($subject);
+
+		if ($class->isCloneable()) {
+			$subject = clone $subject;
+		}
+	}
+
+	\array_unshift($args, $subject);
 
 	if (!$func instanceof Func) {
 		$func = Func::new($func);
