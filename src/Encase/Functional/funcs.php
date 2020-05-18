@@ -1172,7 +1172,6 @@ function union(...$iterables)
 		$values = \array_values($values);
 	} else {
 		$values = unique($values, true);
-		\ksort($values, SORT_STRING);
 	}
 	return $values;
 }

@@ -24,8 +24,8 @@ class UnionTest extends TestCase
 		);
 		$this->assertSame([
 			'a' => 6,
-			'b' => 2,
 			'c' => 3,
+			'b' => 2,
 			'd' => 4,
 			'e' => 5,
 		], $result);
@@ -40,8 +40,8 @@ class UnionTest extends TestCase
 		$this->assertSame([
 			'a', 'b', 'c',
 			'a' => 1,
-			'b' => 2,
 			'c' => 3,
+			'b' => 2,
 		], $result);
 	}
 
