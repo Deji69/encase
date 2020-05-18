@@ -1168,7 +1168,6 @@ function union(...$iterables)
 	));
 	if (isIndexedArray($values)) {
 		$values = \array_unique($values);
-		\sort($values);
 		$values = \array_values($values);
 	} else {
 		$values = unique($values, true);
