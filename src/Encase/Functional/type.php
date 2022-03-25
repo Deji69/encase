@@ -1,6 +1,18 @@
 <?php
 namespace Encase\Functional;
 
+/**
+ * Dynamically represents a type in PHPs type system.
+ *
+ * @method static self array()
+ * @method static self bool()
+ * @method static self float()
+ * @method static self int()
+ * @method static self null()
+ * @method static self object(string $class = null)
+ * @method static self resource()
+ * @method static self string()
+ */
 class Type
 {
 	const TYPES = [
@@ -99,7 +111,7 @@ class Type
 	 *
 	 * @param  string $type
 	 * @param  array $arguments [string $class]
-	 * @return Type
+	 * @return self
 	 *
 	 * @example To create a Type representing a string.
 	 * ```php
@@ -113,6 +125,6 @@ class Type
 	 */
 	public static function __callStatic($type, $arguments): Type
 	{
-		return new Type((string)$type, ...$arguments);
+		return new self((string)$type, ...$arguments);
 	}
 }

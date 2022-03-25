@@ -1,6 +1,8 @@
 <?php
 namespace Encase\Functional;
 
+use ArrayIterator;
+
 /**
  * Get the value of the last element in `$iterable`.
  *
@@ -22,6 +24,11 @@ function last($iterable)
 	// Account for external iterators.
 	if ($iterable instanceof \IteratorAggregate) {
 		$iterable = $iterable->getIterator();
+	}
+
+	// (PHP8+) Account for objects.
+	if (\is_object($iterable)) {
+		$iterable = new ArrayIterator($iterable);
 	}
 
 	// Ensure iterators are valid so we return null rather than false like

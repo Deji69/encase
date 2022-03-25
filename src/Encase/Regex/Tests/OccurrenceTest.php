@@ -1,13 +1,13 @@
 <?php
 namespace Encase\Regex\Tests;
 
-use Encase\Regex\Match;
+use Encase\Regex\Occurrence;
 
-class MatchTest extends TestCase
+class OccurrenceTest extends TestCase
 {
 	public function testConstructFromResults()
 	{
-		$match = Match::fromResults([
+		$match = Occurrence::fromResults([
 			['hello', 0],
 			['hell', 0],
 			['he', 0],

@@ -11,6 +11,7 @@ use function func_get_args;
 use function array_key_exists;
 use Encase\Functional\BoxIterator;
 use Encase\Functional\Traits\Functional;
+use Traversable;
 
 /**
  * An immutable wrapper for any kind of variable, which proxies method calls to
@@ -199,7 +200,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 *
 	 * @return array
 	 */
-	public function jsonSerialize()
+	public function jsonSerialize(): array
 	{
 		return (array)$this->value;
 	}
@@ -209,7 +210,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 *
 	 * @return \Iterator
 	 */
-	public function getIterator()
+	public function getIterator(): Traversable
 	{
 		return new ArrayIterator($this->value);
 	}
@@ -263,7 +264,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 * @param  mixed  $key
 	 * @return self
 	 */
-	public function offsetGet($key)
+	public function offsetGet($key): mixed
 	{
 		return new self($this->value[$key]);
 	}

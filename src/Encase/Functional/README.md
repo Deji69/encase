@@ -1,5 +1,6 @@
 Encase Functional Library
 =========================
+*Inspired by, but technically not functional programming.*
 
 [![Build Status](https://api.travis-ci.org/Deji69/encase-functional.svg?branch=master)](https://travis-ci.org/Deji69/encase-functional)
 [![Latest Stable Version](https://poser.pugx.org/encase/functional/v/stable)](https://packagist.org/packages/encase/functional)

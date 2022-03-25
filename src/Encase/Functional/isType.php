@@ -16,8 +16,8 @@ namespace Encase\Functional;
  *                       must be any one of. A class name or one of: "array",
  *                       "bool", "callable", "countable", "double", "float",
  *                       "function", "int", "integer", "iterable", "long",
- *                       "null", "numeric", "object", "real", "resource",
- *                       "scalar", "string"
+ *                       "null", "numeric", "object", "resource", "scalar",
+ *                       "string"
  * @return bool|string  Returns the matched type string or FALSE if none match.
  */
 function isType($value, $type)

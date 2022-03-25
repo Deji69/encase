@@ -51,17 +51,17 @@ class BoxIterator implements \Iterator
 		return $value instanceof Value ? $value : Value::box($value);
 	}
 
-	public function key()
+	public function key(): mixed
 	{
 		return \key($this->iterable);
 	}
 
-	public function next()
+	public function next(): void
 	{
 		\next($this->iterable);
 	}
 
-	public function rewind()
+	public function rewind(): void
 	{
 		\reset($this->iterable);
 	}

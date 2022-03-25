@@ -68,7 +68,7 @@ class Collection extends Value
 	 *
 	 * @return static
 	 */
-	public function jsonSerialize()
+	public function jsonSerialize(): array
 	{
 		return \array_map(function ($value) {
 			if ($value instanceof JsonSerializable) {

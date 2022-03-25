@@ -3,6 +3,7 @@
 	"type": "library",
 	"description": "Functional, fluent and efficient",
 	"license": "MIT",
+	"version": "0.2",
 	"keywords": ["functional", "fluent", "object oriented", "boxing"],
 	"homepage": "https://github.com/Deji69/encase-functional",
 	"authors": [
@@ -12,12 +13,12 @@
 		}
 	],
 	"require": {
-		"php": "^7.2",
+		"php": "^7.4|^8.1",
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.2",
-		"phpunit/phpunit": "^8.1"
+		"phpunit/phpunit": "^8.5.23"
 	},
 	"suggest": {
 		"encase/regex": "Regex pattern integration in functions such as split()."

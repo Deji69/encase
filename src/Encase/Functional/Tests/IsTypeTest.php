@@ -29,7 +29,7 @@ class IsTypeTest extends TestCase
 			'Is null' => [null, 'null'],
 			'Is bool' => [false, 'bool'],
 			'Is int' => [3, ['int', 'long']],
-			'Is float' => [3.14, ['float', 'real']],
+			'Is float' => [3.14, ['float']],
 			'Is numeric' => [[3, 3.14, '31'], 'numeric'],
 			'Is scalar' => [[3, 3.14, '31', true], 'scalar'],
 			'Is string' => ['foo', 'string'],

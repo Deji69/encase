@@ -126,12 +126,12 @@ class Regex implements Patternable
 		return new self($delim.$pattern.$delim.$modifiers);
 	}
 
-	public function match(string $subject, int $offset = 0): ?Match
+	public function match(string $subject, int $offset = 0): ?Occurrence
 	{
 		$matches = [];
 
 		if (\preg_match($this->getPattern(), $subject, $matches, \PREG_OFFSET_CAPTURE, $offset)) {
-			return Match::fromResults($matches);
+			return Occurrence::fromResults($matches);
 		}
 		return null;
 	}

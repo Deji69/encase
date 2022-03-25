@@ -14,7 +14,7 @@ use Encase\Regex\Patternable;
  * @param  int     $limit Limit for the resulting array size.
  * @return array
  */
-function split(string $str, $separator = '', int $limit = null): array
+function split(string $str, $separator = '', int $limit = -1): array
 {
 	assertType($str, 'string', 'str');
 	assertType($separator, ['string', Patternable::class], 'separator');

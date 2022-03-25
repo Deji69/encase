@@ -1,6 +1,10 @@
 <?php
 namespace Encase\Functional;
 
+use ArrayAccess;
+use ArrayIterator;
+use ArrayObject;
+
 /**
  * Remove the last element from the container and return it.
  * This function takes the input by reference and changes its length.
@@ -32,20 +36,33 @@ function pop(&$arrayish)
 	}
 
 	if ($type === '\ArrayAccess') {
-		if ($arrayish instanceof \IteratorAggregate) {
-			$iterator = $arrayish->getIterator();
-			$value = \end($iterator);
-			$key = \key($iterator);
-		} else {
+		if (!$arrayish instanceof \IteratorAggregate || $arrayish instanceof ArrayAccess) {
 			foreach ($arrayish as $key => $value) {
 			}
+			unset($arrayish[$key]);
+			return $value;
 		}
 
-		unset($arrayish[$key]);
+		if (!$arrayish instanceof ArrayObject) {
+			$vars = array_keys((array)$arrayish);
+			$key = \end($vars);
+			$value = $arrayish[$key];
+			unset($arrayish[$key]);
+			return $value;
+		}
+	}
+
+	if (\is_object($arrayish)) {
+		$obj = new \ArrayObject($arrayish);
+		foreach ($obj as $key => $value) {
+		}
+		unset($arrayish->$key);
+		return $value;
 	} else {
 		$value = \end($arrayish);
 		$key = \key($arrayish);
-		unset($arrayish->$key);
+		unset($arrayish[$key]);
 	}
+
 	return $value;
 }

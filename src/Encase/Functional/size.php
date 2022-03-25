@@ -17,7 +17,7 @@ function size($value)
 	if (\is_string($value)) {
 		return \function_exists('mb_strlen') ?
 			\mb_strlen($value) :
-			\count(\preg_split('//u', $value, null, PREG_SPLIT_NO_EMPTY));
+			\count(\preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY));
 	}
 
 	if (isType($value, ['array', 'Countable'])) {
