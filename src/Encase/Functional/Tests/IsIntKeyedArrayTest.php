@@ -1,44 +1,44 @@
 <?php
 namespace Encase\Functional\Tests;
 
-use function Encase\Functional\isIndexedArray;
+use function Encase\Functional\isIntKeyedArray;
 
-class IsIndexedArrayTest extends TestCase
+class IsIntKeyedArrayTest extends TestCase
 {
 	/** @dataProvider  casesNonArray */
 	public function testWithNonArray($value)
 	{
-		$this->assertFalse(isIndexedArray($value));
+		$this->assertFalse(isIntKeyedArray($value));
 	}
 
 	public function testWithEmptyArray()
 	{
-		$this->assertTrue(isIndexedArray([]));
+		$this->assertFalse(isIntKeyedArray([]));
 	}
 
 	public function testWithSequentialArray()
 	{
-		$this->assertTrue(isIndexedArray([0, 50, 100]));
+		$this->assertTrue(isIntKeyedArray([0, 50, 100]));
 	}
 
 	public function testWithIndexedArray()
 	{
-		$this->assertTrue(isIndexedArray([2 => 0, 0 => 50, 1 => 100]));
+		$this->assertTrue(isIntKeyedArray([2 => 0, 0 => 50, 1 => 100]));
 	}
 
 	public function testWithStringKeyedArray()
 	{
-		$this->assertFalse(isIndexedArray([0, 50, 'a' => 100]));
+		$this->assertFalse(isIntKeyedArray(['a' => 0, 'b' => 50, 'c' => 100]));
 	}
 
 	public function testWithIndexKeyedArray()
 	{
-		$this->assertFalse(isIndexedArray([3 => 0, 2 => 1, 1 => 2]));
+		$this->assertTrue(isIntKeyedArray([3 => 0, 2 => 1, 1 => 2]));
 	}
 
 	public function testWithIndexStringKeyedArray()
 	{
-		$this->assertTrue(isIndexedArray(['1' => 0, '0' => 1, '2' => 2]));
+		$this->assertTrue(isIntKeyedArray(['1' => 0, '0' => 1, '2' => 2]));
 	}
 
 	public function casesNonArray()

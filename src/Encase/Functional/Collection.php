@@ -7,10 +7,6 @@ use function Encase\Functional\split;
 
 class Collection extends Value
 {
-	protected static $boxedType = [
-		'array' => 'array'
-	];
-
 	/**
 	 * Construct a collection.
 	 *
@@ -99,18 +95,6 @@ class Collection extends Value
 	public static function make(...$subject)
 	{
 		return new static(...$subject);
-	}
-
-	/**
-	 * Box value into a collection instance.
-	 *
-	 * @param  mixed  $value
-	 * @return \Encase\Functional\Collection
-	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
-	 */
-	public static function box($value)
-	{
-		return parent::box($value);
 	}
 
 	/**

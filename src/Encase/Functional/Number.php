@@ -3,13 +3,6 @@ namespace Encase\Functional;
 
 class Number extends Value
 {
-	protected static $boxedType = [
-		'int' => 'int',
-		'float' => 'float',
-		'bool' => 'bool',
-		'string' => 'numeric',
-	];
-
 	/**
 	 * Construct a Func using a callable.
 	 * This can be used to disambiguate real functions from strings and arrays.
@@ -18,7 +11,15 @@ class Number extends Value
 	 */
 	public function __construct($value)
 	{
-		assertType($value, ['int', 'bool', 'float'], 'value');
+		assertType($value, 'numeric', 'value');
 		$this->value = $value;
+	}
+
+	public static function cast($value)
+	{
+		if (\is_string($value) && \is_numeric($value)) {
+			return +$value;
+		}
+		return $value;
 	}
 }

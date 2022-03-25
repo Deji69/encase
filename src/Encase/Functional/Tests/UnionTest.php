@@ -8,6 +8,9 @@ class UnionTest extends TestCase
 {
 	public function testWithArray()
 	{
+		$result = union([2], [1, 2]);
+		$this->assertSame([2, 1], $result);
+
 		$result = union([1, 2, 3], [4, 5, 6], [7, 8, 9]);
 		$this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9], $result);
 
@@ -24,8 +27,8 @@ class UnionTest extends TestCase
 		);
 		$this->assertSame([
 			'a' => 6,
-			'b' => 2,
 			'c' => 3,
+			'b' => 2,
 			'd' => 4,
 			'e' => 5,
 		], $result);
@@ -40,8 +43,8 @@ class UnionTest extends TestCase
 		$this->assertSame([
 			'a', 'b', 'c',
 			'a' => 1,
-			'b' => 2,
 			'c' => 3,
+			'b' => 2,
 		], $result);
 	}
 
@@ -56,7 +59,7 @@ class UnionTest extends TestCase
 	public function testUnionWithGenerator()
 	{
 		$result = union([0, 2, 4], self::generator());
-		$this->assertSame([0, 1, 2, 3, 4], $result);
+		$this->assertSame([0, 2, 4, 1, 3], $result);
 	}
 
 	public function testUnionCollectionMethod()

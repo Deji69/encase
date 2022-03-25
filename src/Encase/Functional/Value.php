@@ -19,17 +19,37 @@ use Traversable;
  *
  * Returns from some proxied calls are also wrapped in Value instances.
  *
- * @method int count()
- * @method int size()
- * @method string|bool isType(string|array $type)
  * @method static|$this split(string $separator = '', int $limit = null)
  * @method static|$this type()
+ *
+ * @method mixed  apply(callable $function)
+ * @method self   concat(mixed ...$values)
+ * @method int    count()
+ * @method $this  each(callable $function)
+ * @method self   fill($value, int $length = null)
+ * @method array|false  find(mixed $predOrValue, int $offset)
+ * @method static first()
+ * @method bool|string  isType(string|array $type)
+ * @method string join(?string $separator = ',', string $lastSeparator = null)
+ * @method static last()
+ * @method self   map(callable $function, bool $preserveKeys = false)
+ * @method static pop()
+ * @method static shift()
+ * @method int    size()
+ * @method static slice(?int $begin, int $end = null)
+ * @method static split(string $separator = '', int $limit = null)
+ * @method static type()
+ * @method static union(...$arrayish)
+ * @method static unique(bool $keepKeyed = false, int $sortFlags = \SORT_REGULAR)
+ * @method static values()
  */
 class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-	use Functional;
+	use Functional {
+		box as private baseBox;
+	}
 
-	public static $boxTypes = [
+	const BOX_TYPES = [
 		'string' => Str::class,
 		'callable' => Func::class,
 		'\Generator' => Func::class,
@@ -127,16 +147,17 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	{
 		// Call the Functional function.
 		$result = $this->callFunctionalMethod($this->value, $method, $params);
+		$function = $this->getMethodFunction($method);
 
 		// If the function returns an unmutated copy of its input, we'll return
 		// this instance to allow chaining.
-		if ($this->isMethodTapped($method)) {
+		if ($this->isFunctionTapped($function)) {
 			return $this;
 		}
 
 		// If the function returns a mutated copy of its input, we'll return it
 		// wrapped in a new Value instance to allow chaining.
-		if ($this->isMethodAMutator($method) && !($result instanceof static)) {
+		if ($this->isFunctionAMutator($function) && !($result instanceof static)) {
 			return Value::box($result);
 		}
 
@@ -158,41 +179,6 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 			}
 		}
 		return new static(...$value);
-	}
-
-	/**
-	 * Box a value into a managed wrapper.
-	 *
-	 * @param  mixed  $value
-	 * @return self|Str|Collection|Func
-	 */
-	public static function box($value)
-	{
-		if ($value instanceof self) {
-			$value = $value->get();
-		}
-
-		if (\is_object($value) && !$value instanceof \Generator) {
-			$value = clone $value;
-		}
-
-		$types = \array_keys(static::$boxedType ?? self::$boxTypes);
-
-		if (!empty($types)) {
-			if ($type = assertType($value, $types, 'value')) {
-				if (isset(static::$boxedType)) {
-					$type = static::$boxedType[$type];
-
-					if ($type === 'numeric') {
-						assertType($value, 'numeric', 'value');
-						$value = +$value;
-					}
-				}
-				return new self::$boxTypes[$type]($value);
-			}
-		}
-
-		return new static($value);
 	}
 
 	/**
@@ -313,5 +299,21 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	public function __toString()
 	{
 		return (string)$this->value;
+	}
+
+	public static function cast($value)
+	{
+		if ($value instanceof self) {
+			$value = $value->get();
+		}
+
+		if (self::class === static::class) {
+			if ($type = isType($value, \array_keys(self::BOX_TYPES))) {
+				$boxType = self::BOX_TYPES[$type];
+				return new $boxType($value);
+			}
+		}
+
+		return $value;
 	}
 }

@@ -3,6 +3,7 @@ namespace Encase\Functional\Tests;
 
 use Mockery as m;
 use function Encase\Functional\each;
+use Encase\Functional\Exceptions\InvalidTypeError;
 
 class EachTest extends TestCase
 {
@@ -51,7 +52,7 @@ class EachTest extends TestCase
 			if ($value == 'b') {
 				return false;
 			}
-		});
+		}, true);
 
 		$this->assertFalse($result);
 		$this->assertSame(['a', 'b'], $output);
@@ -63,8 +64,38 @@ class EachTest extends TestCase
 			if ($value === 2) {
 				return $value;
 			}
+		}, true);
+		$this->assertSame(2, $result, true);
+	}
+
+	/** @dataProvider casesEmptyNonIterables */
+	public function testDoesNothingWithEmptyNonIterables($value)
+	{
+		$called = false;
+		each($value, function () use (&$called) {
+			$called = true;
 		});
-		$this->assertSame(2, $result);
+		$this->assertFalse($called);
+	}
+
+	/** @dataProvider casesNonEmptyNonIterables */
+	public function testErrorsWithNonEmptyNonIterables($value)
+	{
+		$type = \is_object($value) ? \get_class($value) : \gettype($value);
+
+		$this->expectException(InvalidTypeError::class);
+		$this->expectExceptionMessage(
+			"Argument 0 (\$iterable) of Encase\\Functional\\each expects "
+			."iterable, stdClass or string, $type given"
+		);
+
+		$called = false;
+
+		each($value, function () use (&$called) {
+			$called = true;
+		});
+
+		$this->assertFalse($called);
 	}
 
 	public function testWithString()
@@ -101,10 +132,10 @@ class EachTest extends TestCase
 	 */
 	public function testTypeAssertions($value, $type)
 	{
-		$this->expectException(\InvalidArgumentException::class);
+		$this->expectException(InvalidTypeError::class);
 		$this->expectExceptionMessage(
 			"Argument 0 (\$iterable) of Encase\\Functional\\each expects ".
-			"iterable, stdClass, string or null, $type given"
+			"iterable, stdClass or string, $type given"
 		);
 		each($value, function () {
 			//
@@ -158,10 +189,27 @@ class EachTest extends TestCase
 		];
 	}
 
+	public function casesEmptyNonIterables()
+	{
+		return [
+			[null],
+			[false],
+			[0],
+		];
+	}
+
+	public function casesNonEmptyNonIterables()
+	{
+		return [
+			[1],
+			[true],
+		];
+	}
+
 	public function casesInvalidArgumentExceptions()
 	{
 		yield 'With zero number' => [
-			'iterable' => 0,
+			'iterable' => 2,
 			'type' => 'integer',
 		];
 		yield 'With number' => [

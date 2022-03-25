@@ -1,6 +1,10 @@
 <?php
 namespace Encase\Functional;
 
+use Closure;
+use Generator;
+use ReflectionMethod;
+use ReflectionFunction;
 use ReflectionFunctionAbstract;
 
 /**
@@ -11,14 +15,10 @@ use ReflectionFunctionAbstract;
  * Also provides reflection information on the underlying function/generator.
  *
  * @method static box(callable $value)
+ * @method \Closure|callable get(callable $value)
  */
 class Func extends Value
 {
-	protected static $boxedType = [
-		'callable' => 'callable',
-		'\Generator' => 'callable'
-	];
-
 	/** @var bool */
 	protected $isMethod = false;
 
@@ -32,11 +32,13 @@ class Func extends Value
 	 * Construct a Func using a callable or generator.
 	 * This can be used to disambiguate real functions from strings and arrays.
 	 *
-	 * @param  callable|\Generator $function
+	 * @param  callable|Generator $function
 	 */
 	public function __construct($function)
 	{
-		if ($function instanceof \Generator) {
+		$type = assertType($function, [Generator::class, 'callable'], 'function');
+
+		if ($type === Generator::class) {
 			$this->isGenerator = true;
 			$this->value = function () use ($function) {
 				$result = $function->current();
@@ -57,7 +59,7 @@ class Func extends Value
 	 */
 	public function isClosure(): bool
 	{
-		return !$this->isGenerator && $this->value instanceof \Closure;
+		return !$this->isGenerator && $this->value instanceof Closure;
 	}
 
 	/**
@@ -123,27 +125,15 @@ class Func extends Value
 	/**
 	 * Get a ReflectionMethod or ReflectionFunction instance for the function.
 	 *
-	 * @return \ReflectionFunctionAbstract
+	 * @return ReflectionFunctionAbstract
 	 */
 	public function getReflection(): ReflectionFunctionAbstract
 	{
 		if (!isset($this->reflection)) {
 			$this->reflection = $this->isMethod ?
-				new \ReflectionMethod($this->value[0], $this->value[1]) :
-				new \ReflectionFunction($this->value);
+				new ReflectionMethod($this->value[0], $this->value[1]) :
+				new ReflectionFunction($this->value);
 		}
 		return $this->reflection;
-	}
-
-	/**
-	 * Box value into a Func instance.
-	 *
-	 * @param  callable  $value
-	 * @return \Encase\Functional\Func
-	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
-	 */
-	public static function box($value)
-	{
-		return parent::box($value);
 	}
 }

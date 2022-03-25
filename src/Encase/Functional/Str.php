@@ -3,28 +3,20 @@ namespace Encase\Functional;
 
 class Str extends Value
 {
-	protected static $boxedType = [
-		'string' => 'string',
-		'int' => 'string',
-		'bool' => 'string',
-		'float' => 'string',
-	];
-
-	public function __construct($value = '')
+	public function __construct(string $value = '')
 	{
-		$this->value = (string)$value;
+		$this->value = $value;
 	}
 
 	/**
-	 * Box value into a string wrapper instance.
+	 * Cast value for boxing to Str.
 	 *
 	 * @param  string  $value
-	 * @return \Encase\Functional\Str
-	 * @throws \Encase\Functional\Exceptions\InvalidTypeError
+	 * @return string
 	 */
-	public static function box($value)
+	public static function cast($value)
 	{
-		return parent::box($value);
+		return (string)$value;
 	}
 
 	/**

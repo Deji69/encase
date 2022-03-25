@@ -45,7 +45,7 @@ class BoxTest extends TestCase
 
 	public function testBoxWithTypeHintInvalidValueThrowsException()
 	{
-		$this->expectException(\InvalidArgumentException::class);
+		$this->expectException(InvalidTypeError::class);
 		Func::box(1);
 	}
 

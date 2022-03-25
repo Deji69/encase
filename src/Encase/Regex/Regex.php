@@ -94,7 +94,7 @@ class Regex implements Patternable
 			if (\strpos($modifiers, $char) === false) {
 				return false;
 			}
-		}) === null;
+		}, true) === null;
 	}
 
 	/**

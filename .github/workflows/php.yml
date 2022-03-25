@@ -10,75 +10,63 @@ on:
 
 jobs:
   tests:
-    name: "Run Test Suite"
-    
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.operating-system }}
     
     strategy:
       matrix:
-        php-binary: [php7.2, php7.3]
-        dependencies: [lowest, locked, highest]
-        
+        php-version: ['7.4']
+        operating-system: [ubuntu-latest]
+        dependencies:
+          - lowest
+          - locked
+          - highest
+          
+    name: PHP ${{ matrix.php-version }}, ${{ matrix.dependencies }}, ${{ matrix.operating-system }}
+    
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v1
-      
-      - name: "Disable XDebug"
-        run: ${{ matrix.php-binary }} --ini | grep xdebug | sed 's/,$//' | xargs sudo rm
+        uses: actions/checkout@v2
+        
+      - name: "Setup PHP, composer and extensions"
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: json, mbstring
+          coverage: pcov
 
       - name: Validate composer.json and composer.lock
         run: composer validate
+        
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
       
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1
         with:
-          path: ~/.composer/cache
-          key: ${{ matrix.php-binary }}-composer-${{ matrix.dependencies }}-${{ github.sha }}
-          restore-keys: |
-            ${{ matrix.php-binary }}-composer-${{ matrix.dependencies }}-
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
         
       - name: "Install lowest dependencies with composer"
         if: matrix.dependencies == 'lowest'
-        run: composer update --no-interaction --no-progress --no-suggest --prefer-lowest
+        run: composer update --no-ansi --no-interaction --no-progress --no-suggest --optimize-autoloader --prefer-lowest
         
       - name: "Install locked dependencies with composer"
         if: matrix.dependencies == 'locked'
-        run: composer install --no-interaction --no-progress --no-suggest
+        run: composer install --no-ansi --no-interaction --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
       - name: "Install highest dependencies with composer"
         if: matrix.dependencies == 'highest'
-        run: composer update --no-interaction --no-progress --no-suggest
+        run: composer update --no-ansi --no-interaction --no-progress --no-suggest --optimize-autoloader
         
       - name: Run test suite
         run: composer run-script test
 
-  code-coverage:
-    name: "Code Coverage"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v1
-
-      - name: "Cache dependencies installed with composer"
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache
-          key: php7.3-composer-locked-${{ github.sha }}
-          restore-keys: |
-            php7.3-composer-locked-
-
-      - name: "Install locked dependencies with composer"
-        run: composer install --no-interaction --no-progress --no-suggest
-
-      - name: "Dump Xdebug filter with phpunit/phpunit"
-        run: vendor/bin/phpunit --dump-xdebug-filter=.build/phpunit/xdebug-filter.php
-
       - name: "Collect code coverage with Xdebug and phpunit/phpunit"
-        run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --prepend=.build/phpunit/xdebug-filter.php
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: "Send code coverage report to Codecov.io"
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash)
+        run: bash <(curl -s https://codecov.io/bash) || true
