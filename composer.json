@@ -9,11 +9,11 @@
 		}
 	],
 	"require": {
-		"php": "^7.4|^8.1",
+		"php": "^8.1",
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
-		"php": "^7.4|^8.1",
+		"php": "^8.1",
 		"mockery/mockery": "^1.2",
 		"phpbench/phpbench": "@dev",
 		"phpunit/phpunit": "^8.1"
