@@ -32,34 +32,7 @@
 			"/Performance/"
 		],
 		"files": [
-			"accumulate.php",
-			"apply.php",
-			"assertType.php",
-			"box.php",
-			"concat.php",
-			"each.php",
-			"fill.php",
-			"find.php",
-			"first.php",
-			"isAssociativeArray.php",
-			"isIndexedArray.php",
-			"isSequentialArray.php",
-			"isType.php",
-			"join.php",
-			"last.php",
-			"map.php",
-			"not.php",
-			"pop.php",
-			"shift.php",
-			"size.php",
-			"slice.php",
-			"split.php",
-			"take.php",
-			"toArray.php",
-			"typeOf.php",
-			"union.php",
-			"unique.php",
-			"values.php"
+			"funcs.php"
 		]
 	},
 	"autoload-dev": {

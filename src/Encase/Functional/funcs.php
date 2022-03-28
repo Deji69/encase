@@ -1,6 +1,9 @@
 <?php
 namespace Encase\Functional;
 
+use ArrayAccess;
+use ArrayIterator;
+use ArrayObject;
 use Encase\Regex\Patternable;
 use Encase\Functional\Exceptions\InvalidTypeError;
 use ReflectionClass;
@@ -365,6 +368,11 @@ function first($iterable)
 		$iterable = $iterable->getIterator();
 	}
 
+	// (PHP8+) Account for objects.
+	if (\is_object($iterable)) {
+		$iterable = new ArrayIterator($iterable);
+	}
+
 	// Ensure iterators are valid so we return null rather than false like
 	// end() does. If it's an \ArrayIterator, we can treat it as an array, for
 	// whatever reason...
@@ -637,6 +645,11 @@ function last($iterable)
 		$iterable = $iterable->getIterator();
 	}
 
+	// (PHP8+) Account for objects.
+	if (\is_object($iterable)) {
+		$iterable = new ArrayIterator($iterable);
+	}
+
 	// Ensure iterators are valid so we return null rather than false like
 	// end() does. If it's an \ArrayIterator, we can treat it as an array, for
 	// whatever reason...
@@ -753,15 +766,34 @@ function pop(&$arrayish)
 	}
 
 	if ($type === '\ArrayAccess') {
-		foreach ($arrayish as $key => $value) {
+		if (!$arrayish instanceof \IteratorAggregate || $arrayish instanceof ArrayAccess) {
+			foreach ($arrayish as $key => $value) {
+			}
+			unset($arrayish[$key]);
+			return $value;
 		}
 
-		unset($arrayish[$key]);
+		if (!$arrayish instanceof ArrayObject) {
+			$vars = array_keys((array)$arrayish);
+			$key = \end($vars);
+			$value = $arrayish[$key];
+			unset($arrayish[$key]);
+			return $value;
+		}
+	}
+
+	if (\is_object($arrayish)) {
+		$obj = new ArrayObject($arrayish);
+		foreach ($obj as $key => $value) {
+		}
+		unset($arrayish->$key);
+		return $value;
 	} else {
 		$value = \end($arrayish);
 		$key = \key($arrayish);
-		unset($arrayish->$key);
+		unset($arrayish[$key]);
 	}
+
 	return $value;
 }
 
@@ -892,7 +924,7 @@ function size($value)
 	if (\is_string($value)) {
 		return \function_exists('mb_strlen') ?
 			\mb_strlen($value) :
-			\count(\preg_split('//u', $value, null, PREG_SPLIT_NO_EMPTY));
+			\count(\preg_split('//u', $value, -1, PREG_SPLIT_NO_EMPTY));
 	}
 
 	if (isType($value, ['array', 'Countable'])) {
@@ -1011,7 +1043,7 @@ function slice($value, ?int $start, int $end = null)
  * @param  int     $limit Limit for the resulting array size.
  * @return array
  */
-function split(string $str, $separator = '', int $limit = null): array
+function split(string $str, $separator = '', int $limit = -1): array
 {
 	assertType($str, 'string', 'str');
 	assertType($separator, ['string', Patternable::class], 'separator');

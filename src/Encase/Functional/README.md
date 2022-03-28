@@ -35,7 +35,6 @@ Encase Functional Library
     - [Static Methods](#static-methods-2)
     - [Methods](#methods-1)
 - [Functions](#functions)
-  - [`accumulate`](#accumulate)
   - [`apply`](#apply)
     - [Behavioural difference with PHP internal functions](#behavioural-difference-with-php-internal-functions)
   - [`assertType`](#asserttype)
@@ -55,6 +54,7 @@ Encase Functional Library
   - [`map`](#map)
   - [`not`](#not)
   - [`pop`](#pop)
+  - [`reduce`](#reduce)
   - [`shift`](#shift)
   - [`size`](#size)
   - [`slice`](#slice)
@@ -380,31 +380,6 @@ This is a list of the functions provided by the library. Most of these are commo
 All functions try to make maximum use of native PHP features as well as possible and aim to be flexible in their usability. One example of this is how many functions expecting `array`-like subjects will accept strings and treat them as arrays of unicode characers.
 
 **REMEMBER:** Most of these functions can be called as methods on any `Value`-derived type (or user class using the `Encase\Functional\Functional` trait). When called as methods, the contained value is always passed to the function as the first argument.
-
-## `accumulate`
-`accumulate($iterable, mixed $initial = null, callable $func = null): mixed`
-
-Iterates over `$iterable`, calling `$func` each time in order to mutate `$initial`, and returns the resulting value of `$initial`. Each call to `$func` passes the current, mutated value of `$initial`, followed by the `$iterable` element value, then the key, and finally the `$iterable` itself, and the return value is assigned to `$initial` and used for the next call, or returned from this function.
-
-**Example: Default behaviours with various types**
-```php
-// default numeric behaviour is to sum all elements
-accumulate([1, 2, 3], 10);                // returns: 16
-// default string behaviour is to concatenate all elemnts
-accumulate([' my', ' friend'], 'hello');  // returns: 'hello my friend'
-// default array behaviour is to append all elemnts
-accumulate(['b', 'c'], ['a']);            // returns: ['a', 'b', 'c']
-// otherwise, the latst $iterable element is returned
-accumulate(['a', 'b', 'c']);              // returns: 'c'
-```
-
-**Example: Using custom predicates**
-```php
-// returns the product: 1 * 2 * 3 * 4 = 24
-accumulate([2, 3, 4], 1, function ($current, $value, $key, $iterable) {
-    return $current * $value;
-});
-```
 
 ## `apply`
 `apply(mixed $subject, callable $func, mixed ...$args): mixed`
@@ -761,6 +736,31 @@ Pop from string.
 $string = '✔✔✖';
 pop($string);         // returns: ✖
 // $string === '✔✔'
+```
+
+## `reduce`
+`reduce($iterable, callable $reducer, mixed $initial = null): mixed`
+
+Iterates over `$iterable`, calling `$reducer` each time in order to mutate `$initial`, and returns the resulting value of `$initial`. Each call to `$reducer` passes the current, mutated value of `$initial`, followed by the `$iterable` element value, then the key, and finally the `$iterable` itself, and the return value is assigned to `$initial` and used for the next call, or returned from this function.
+
+**Example: Default behaviours with various types**
+```php
+// default numeric behaviour is to sum all elements
+reduce([1, 2, 3], 10);                // returns: 16
+// default string behaviour is to concatenate all elemnts
+reduce([' my', ' friend'], 'hello');  // returns: 'hello my friend'
+// default array behaviour is to append all elemnts
+reduce(['b', 'c'], ['a']);            // returns: ['a', 'b', 'c']
+// otherwise, the latst $iterable element is returned
+reduce(['a', 'b', 'c']);              // returns: 'c'
+```
+
+**Example: Using custom predicates**
+```php
+// returns the product: 1 * 2 * 3 * 4 = 24
+reduce([2, 3, 4], 1, function ($current, $value, $key, $iterable) {
+    return $current * $value;
+});
 ```
 
 ## `shift`
