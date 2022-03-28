@@ -28,7 +28,7 @@
 		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory>./src</directory>
 			<exclude>
-				<directory>./src/Encase/*/Tests</directory>
+				<!--<directory>./src/Encase/*/Tests</directory>-->
 				<directory>./src/Encase/*/vendor</directory>
 			</exclude>
 		</whitelist>

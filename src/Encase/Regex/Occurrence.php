@@ -82,7 +82,7 @@ class Occurrence implements ArrayAccess, Countable
 	 * @param  int $index
 	 * @return Occurrence
 	 */
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->group[$index];
 	}

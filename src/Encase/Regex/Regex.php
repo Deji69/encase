@@ -154,7 +154,7 @@ class Regex implements Patternable
 	 * @param  int     $limit
 	 * @return array
 	 */
-	public static function split(string $string, string $pattern, int $limit = null): array
+	public static function split(string $string, string $pattern, int $limit = -1): array
 	{
 		return split($string, new static($pattern), $limit);
 	}

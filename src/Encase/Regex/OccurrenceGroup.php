@@ -65,7 +65,7 @@ class OccurrenceGroup implements ArrayAccess, Countable
 	 * @param  int $offset
 	 * @return Occurrence
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		return $this->getOccurrence($offset);
 	}

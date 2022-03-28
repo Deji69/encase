@@ -20,7 +20,7 @@
 	<testsuites>
 		<testsuite name="Encase Test Suite">
 			<!--<directory>./tests</directory>-->
-			<directory>./src/Encase/*/Tests</directory>
+			<directory>./src/Encase/**/Tests</directory>
 		</testsuite>
 	</testsuites>
 	
@@ -28,7 +28,7 @@
 		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory>./src</directory>
 			<exclude>
-				<directory>./src/Encase/*/Tests</directory>
+				<!--<directory>./src/Encase/*/Tests</directory>-->
 				<directory>./src/Encase/*/vendor</directory>
 			</exclude>
 		</whitelist>
