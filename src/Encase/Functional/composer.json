@@ -17,7 +17,7 @@
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
-		"mockery/mockery": "^1.2",
+		"mockery/mockery": "^1.3",
 		"phpunit/phpunit": "^8.5.23"
 	},
 	"suggest": {
