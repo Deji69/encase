@@ -204,7 +204,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	/**
 	 * Get an iterator that boxes elements to Value instances.
 	 *
-	 * @return \BoxIterator
+	 * @return BoxIterator
 	 */
 	public function getBoxIterator(): BoxIterator
 	{
@@ -215,7 +215,7 @@ class Value implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 	 * Convenience alias for getBoxIterator().
 	 *
 	 * @uses self::getBoxIterator Name
-	 * @return \BoxIterator
+	 * @return BoxIterator
 	 */
 	public function boxIt(): BoxIterator
 	{
